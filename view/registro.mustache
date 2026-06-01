@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados</title>
+    <link rel="stylesheet" href="/public/css/login.css">
+</head>
+<body>
+
+<main class="auth-container">
+    <section class="auth-card registro-card">
+        <h1>Crear cuenta</h1>
+        <p class="auth-subtitle">Registrate para empezar a jugar Preguntados.</p>
+
+        {{#error}}
+            <p class="auth-error">{{error}}</p>
+        {{/error}}
+
+        <form action="/login/registrar" method="POST" enctype="multipart/form-data" class="auth-form registro-form">
+
+            <div class="profile-upload form-full">
+                <label for="foto_perfil" class="profile-icon">
+                    <img src="/public/img/perfil-icono.png" alt="Cargar foto de perfil">
+                </label>
+
+                <input
+                    type="file"
+                    id="foto_perfil"
+                    name="foto_perfil"
+                    accept="image/*"
+                    hidden
+                >
+
+                <p>Cargar foto de perfil</p>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" name="nombre_completo" required>
+            </div>
+
+            <div class="form-group">
+                <label>Año de nacimiento</label>
+                <input type="number" name="anio_nacimiento" min="1900" max="2026" required>
+            </div>
+
+            <div class="form-group">
+                <label>Sexo</label>
+                <select name="sexo" required>
+                    <option value="">Seleccioná una opción</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Prefiero no cargarlo">Prefiero no cargarlo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nombre de usuario</label>
+                <input type="text" name="nombre_usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label>Correo</label>
+                <input type="email" name="correo" required>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label>País</label>
+                <input type="text" name="pais" required>
+            </div>
+
+            <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" name="ciudad" required>
+            </div>
+
+            <div class="form-group form-full">
+                <div class="map-placeholder">
+                    Mapa para seleccionar país y ciudad
+                </div>
+            </div>
+
+            <button type="submit" class="form-full">Registrarme</button>
+        </form>
+
+        <p class="auth-link"> ¿Ya tenés cuenta? <a href="/login/ver">Iniciar sesión</a></p>
+    </section>
+</main>
+
+</body>
+</html>

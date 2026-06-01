@@ -13,6 +13,16 @@ class Configurator {
         return new VikingoController($this->getVikingoModel(), $this->getRenderer(), new Request());
     }
 
+    public function getLoginController()
+    {
+        return new LoginController($this->getRenderer());
+    }
+
+    public function getHomeController()
+    {
+        return new HomeController($this->getRenderer());
+    }
+
     private function getDatabase()
     {
         return new MyDatabase(
@@ -35,7 +45,7 @@ class Configurator {
 
     public function getRouter()
     {
-        return new Router($this, 'vikingo', 'ver');
+        return new Router($this, 'login', 'verRegistro');
     }
 
     public function getOrDefault($controllerName, $defaultControllerName)
