@@ -15,7 +15,7 @@ class Configurator {
 
     public function getLoginController()
     {
-        return new LoginController($this->getRenderer());
+        return new LoginController($this->getUsuarioModel(), $this->getRenderer(), new Request());
     }
 
     public function getHomeController()
@@ -41,6 +41,10 @@ class Configurator {
     private function getVikingoModel()
     {
         return new VikingoModel($this->getDatabase());
+    }
+
+    private function getUsuarioModel() {
+        return new UsuarioModel($this->getDatabase());
     }
 
     public function getRouter()
