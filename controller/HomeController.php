@@ -10,7 +10,7 @@ class HomeController{
     public function ver()
     {
         session_start();
-        if(isset($_SESSION["usuario_id"])){
+        if(!isset($_SESSION["usuario_id"])){
             Redirect::to("/login/ver");
             return;
         }

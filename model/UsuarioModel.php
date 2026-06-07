@@ -19,8 +19,17 @@ class UsuarioModel {
 
         Log::info("SQL: $sql [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto]");
 
-        return $this->database->execute($sql, [$nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_BCRYPT), $pais, $ciudad, $foto]);
+        return $this->database->execute($sql, [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto]);
     }
-    
+    public function existeUsername($username) {
+        $sql = "SELECT id FROM usuarios WHERE username = ?";
+        $filas = $this->database->query($sql, [$username]);
+        return !empty($filas);
+    }
+    public function existeEmail($email) {
+        $sql = "SELECT id FROM usuarios WHERE email = ?";
+        $filas = $this->database->query($sql, [$email]);
+        return !empty($filas);
+    }
 
 }
