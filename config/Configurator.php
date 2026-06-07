@@ -43,6 +43,10 @@ class Configurator {
         return new VikingoModel($this->getDatabase());
     }
 
+    private function getUsuarioModel() {
+        return new UsuarioModel($this->getDatabase());
+    }
+
     public function getRouter()
     {
         return new Router($this, 'login', 'verRegistro');
@@ -56,10 +60,6 @@ class Configurator {
         }
         $defaultGetter = 'get' . ucfirst($defaultControllerName) . 'Controller';
         return $this->{$defaultGetter}();
-    }
-
-    public function getUsuarioModel() {
-        return new UsuarioModel($this->getDatabase());
     }
 
     public function getUbicacionModel() {

@@ -14,13 +14,13 @@
         <p class="auth-subtitle">Ingresá con tu cuenta para acceder al lobby.</p>
 
         {{#error}}
-            <p class="auth-error">{{error}}</p>
+            <p class="auth-error">{{.}}</p>
         {{/error}}
 
         <form action="/login/validar" method="POST" class="auth-form">
             <div class="form-group">
-                <label>Correo</label>
-                <input type="email" name="correo" required>
+                <label>Nombre de usuario</label>
+                <input type="text" name="username" required>
             </div>
 
             <div class="form-group">

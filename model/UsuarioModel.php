@@ -7,6 +7,13 @@ class UsuarioModel {
         $this->database = $database;
     }
 
+    public function getByUsername($username) {
+        $sql = "SELECT * FROM usuarios WHERE username = ?";
+        log::info("UsuarioModel::getByUsername username: $username");
+        $filas = $this->database->query($sql, [$username]);
+        return !empty($filas) ? $filas[0] : null;
+    }
+
     public function registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto) {
         $sql = "INSERT INTO usuarios (nombre, anio_nacimiento, sexo, username, email, password, pais, ciudad, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

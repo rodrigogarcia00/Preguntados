@@ -9,8 +9,15 @@ class HomeController{
 
     public function ver()
     {
-        Log::info("HomeController::ver");
-        $this->renderer->render("verHomeView", []);
+        session_start();
+        if(isset($_SESSION["usuario_id"])){
+            Redirect::to("/login/ver");
+            return;
+        }
+        Log::info("HomeController::ver - usuario: " . $_SESSION["username"]);
+        $this->renderer->render("verHomeView", [
+            "nombre" => $_SESSION["usuario_nombre"],
+        ]);
     }
 
 }

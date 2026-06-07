@@ -54,12 +54,40 @@ class LoginController{
     }
 
     public function ver() {
-        $this->renderer->render("login");
+        session_start();
+        $error = $_SESSION["error"] ?? null;
+        unset($_SESSION["error"]);
+        $this->renderer->render("login", ["error" => $error]);
     }
 
     public function validar() {
+        $username = $this->request->post("username");
+        $password = $this->request->post("password");
+
+        if (empty($username) || empty($password)) {
+            session_start();
+            $_SESSION["error"] = "Complete todos los campos.";
+            Redirect::to("/login/ver");
+            return;
+        }
+
+        $usuario = $this->usuarioModel->getByUsername($username);
+
+        if ($usuario === null || !password_verify($password, $usuario["password"])) {
+            session_start();
+            $_SESSION["error"] = "Usuario o contraseña incorrectos.";
+            Log::warning("LoginController::validar - credenciales incorrectas: $username");
+            Redirect::to("/login/ver");
+            return;
+        }
+
+        session_start();
+        $_SESSION["usuario_id"]     = $usuario["id"];
+        $_SESSION["usuario_nombre"] = $usuario["nombre"];
+        $_SESSION["username"]       = $usuario["username"];
+
+        Log::info("LoginController::validar - login exitoso: $username");
         Redirect::to("/home/ver");
-        exit;
     }
 
     public function logout() {
@@ -67,7 +95,6 @@ class LoginController{
         session_destroy();
 
         Redirect::to("/login/ver");
-        exit;
     }
 
     private function procesarFoto() {
