@@ -15,7 +15,7 @@ class Configurator {
 
     public function getLoginController()
     {
-        return new LoginController($this->getUsuarioModel(), $this->getRenderer(), new Request());
+        return new LoginController($this->getRenderer(), $this->getUsuarioModel(), $this->getUbicacionModel(), new Request());
     }
 
     public function getHomeController()
@@ -60,5 +60,9 @@ class Configurator {
         }
         $defaultGetter = 'get' . ucfirst($defaultControllerName) . 'Controller';
         return $this->{$defaultGetter}();
+    }
+
+    public function getUbicacionModel() {
+        return new UbicacionModel();
     }
 }
