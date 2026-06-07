@@ -47,6 +47,16 @@ class LoginController{
             return;
         }
 
+        if ($this->usuarioModel->existeUsername($username)) {
+            $this->renderer->render("registro", ["error" => "El nombre de usuario ya está en uso."]);
+            return;
+        }
+
+        if ($this->usuarioModel->existeEmail($email)) {
+            $this->renderer->render("registro", ["error" => "El correo ya está registrado."]);
+            return;
+        }
+
         Log::info("LoginController::registrar - nombre=$nombre");
         $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_DEFAULT), $pais, $ciudad, $foto);
         Redirect::to("/login/ver");
