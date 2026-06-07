@@ -13,10 +13,6 @@
         <h1>Crear cuenta</h1>
         <p class="auth-subtitle">Registrate para empezar a jugar Preguntados.</p>
 
-        {{#error}}
-            <p class="auth-error">{{error}}</p>
-        {{/error}}
-
         <form action="/login/registrar" method="POST" enctype="multipart/form-data" class="auth-form registro-form">
 
             <div class="profile-upload form-full">
@@ -35,7 +31,7 @@
                 <p>Cargar foto de perfil</p>
             </div>
 
-            <div class="form-group">
+            <div class="form-group form-nombre-completo">
                 <label>Nombre completo</label>
                 <input type="text" name="nombre_completo" required>
             </div>
@@ -71,19 +67,18 @@
             </div>
 
             <div class="form-group">
-                <label>País</label>
-                <input type="text" name="pais" required>
+                <label>Repetir contraseña</label>
+                <input type="password" name="confirm_password" required>
             </div>
 
             <div class="form-group">
-                <label>Ciudad</label>
-                <input type="text" name="ciudad" required>
+                <label>Latitud</label>
+                <input type="text" name="latitud" required>
             </div>
 
-            <div class="form-group form-full">
-                <div class="map-placeholder">
-                    Mapa para seleccionar país y ciudad
-                </div>
+            <div class="form-group">
+                <label>Longitud</label>
+                <input type="text" name="longitud" required>
             </div>
 
             <button type="submit" class="form-full">Registrarme</button>
