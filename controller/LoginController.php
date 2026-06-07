@@ -29,9 +29,17 @@ class LoginController{
         $sexo = $this->request->post("sexo");
         $username = $this->request->post("nombre_usuario");
         $email = $this->request->post("correo");
-        $password = password_hash($this->request->post("password"), PASSWORD_DEFAULT);
+        $password = $this->request->post("password");
+        $confirm_password = $this->request->post("confirm_password");
         $pais = $ubicacion["pais"];
         $ciudad = $ubicacion["ciudad"];
+
+        if ($password != $confirm_password) {
+            $this->renderer->render("registro", [
+                "error" => "Las contraseñas no coinciden"
+            ]);
+            return;
+        }
 
         if (!is_numeric($anio_nacimiento)) {
             Log::warning("LoginController::registrar - año de nacimiento invalido: $anio_nacimiento");
@@ -40,7 +48,7 @@ class LoginController{
         }
 
         Log::info("LoginController::registrar - nombre=$nombre");
-        $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto);
+        $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_DEFAULT), $pais, $ciudad, $foto);
         Redirect::to("/login/ver");
         exit;
     }
