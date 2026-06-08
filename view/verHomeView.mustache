@@ -1,48 +1,121 @@
 {{>header}}
 
-<main class="container">
-    <section class="hero">
-        <h2>Demostrá cuánto sabés</h2>
-        <p>
-            Respondé preguntas de distintas categorías, sumá puntos y competí contra otros jugadores.
-        </p>
+<main class="lobby-container">
 
-        <div class="hero-actions">
-            <a href="#" class="btn btn-primary">Nueva partida</a>
-            <a href="#" class="btn btn-secondary">Ver ranking</a>
+    <!-- PANEL DE BIENVENIDA -->
+    <section class="welcome-panel">
+        <div class="welcome-left">
+            <div class="avatar-wrapper">
+                <img src="/public/img/perfil-icono.png" alt="Avatar" class="avatar">
+                <span class="online-dot"></span>
+            </div>
+            <div class="welcome-info">
+                <p class="welcome-label">Bienvenido/a de vuelta</p>
+                <h1 class="welcome-name">{{nombre}}</h1>
+                <div class="rank-badge">
+                    <span class="rank-icon">⭐</span>
+                    <span class="rank-score">{{puntaje}} puntos</span>
+                    <span class="rank-position">· Posición #{{posicion}} en el ranking</span>
+                </div>
+            </div>
+        </div>
+        <div class="trampitas-panel">
+            <span class="trampitas-icon">🃏</span>
+            <span class="trampitas-count">{{trampitas}}</span>
+            <span class="trampitas-label">trampitas</span>
+            <a href="/trampita/comprar" class="btn-buy-trampita">+ Comprar</a>
         </div>
     </section>
 
-    <section class="history">
-        <h2>Historial de partidas</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Categoría final</th>
-                    <th>Puntaje obtenido</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>30/05/2026</td>
-                    <td><span class="category historia">Historia</span></td>
-                    <td>8 puntos</td>
-                </tr>
-                <tr>
-                    <td>28/05/2026</td>
-                    <td><span class="category deportes">Deportes</span></td>
-                    <td>5 puntos</td>
-                </tr>
-                <tr>
-                    <td>25/05/2026</td>
-                    <td><span class="category cultura">Cultura</span></td>
-                    <td>3 puntos</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- ACCIONES PRINCIPALES -->
+    <section class="main-actions">
+        <a href="/partida/nueva" class="action-card action-play">
+            <span class="action-icon">▶</span>
+            <span class="action-title">Nueva partida</span>
+            <span class="action-desc">Jugá solo contra el juego</span>
+        </a>
+        <a href="/partida/desafio" class="action-card action-duel">
+            <span class="action-icon">⚔</span>
+            <span class="action-title">Desafiar jugador</span>
+            <span class="action-desc">Retá a alguien a una partida</span>
+        </a>
+        <a href="/ranking/ver" class="action-card action-ranking">
+            <span class="action-icon">🏆</span>
+            <span class="action-title">Ranking global</span>
+            <span class="action-desc">Mirá cómo estás entre todos</span>
+        </a>
+        <a href="/pregunta/crear" class="action-card action-create">
+            <span class="action-icon">✏</span>
+            <span class="action-title">Crear pregunta</span>
+            <span class="action-desc">Aportá preguntas al juego</span>
+        </a>
     </section>
+
+    <!-- PARTIDAS EN ESPERA (desafíos recibidos) -->
+    {{#partidas_pendientes}}
+        <section class="pending-section">
+            <h2 class="section-title">⏳ Partidas en espera</h2>
+            <div class="pending-list">
+                {{#pendientes}}
+                    <div class="pending-card">
+                        <img src="/public/img/perfil-icono.png" class="pending-avatar" alt="jugador">
+                        <div class="pending-info">
+                            <p class="pending-rival">{{rival}}</p>
+                            <p class="pending-date">te desafió el {{fecha}}</p>
+                        </div>
+                        <a href="/partida/aceptar?id={{id}}" class="btn btn-aceptar">Aceptar</a>
+                    </div>
+                {{/pendientes}}
+            </div>
+        </section>
+    {{/partidas_pendientes}}
+
+    <!-- HISTORIAL DE PARTIDAS -->
+    <section class="history-section">
+        <h2 class="section-title">📋 Historial de partidas</h2>
+
+        {{#sin_partidas}}
+            <div class="empty-history">
+                <p>Todavía no jugaste ninguna partida. ¡Empezá ahora!</p>
+            </div>
+        {{/sin_partidas}}
+
+        {{#con_partidas}}
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Categoría final</th>
+                        <th>Puntaje</th>
+                        <th>Resultado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#partidas}}
+                        <tr>
+                            <td class="td-fecha">{{fecha}}</td>
+                            <td class="td-tipo">
+                                {{#vs_jugador}}<span class="badge-vs">VS {{rival}}</span>{{/vs_jugador}}
+                                {{#solo}}<span class="badge-solo">Solo</span>{{/solo}}
+                            </td>
+                            <td class="td-categoria">
+                                <span class="category-tag {{categoria_clase}}">{{categoria_nombre}}</span>
+                            </td>
+                            <td class="td-puntaje">{{puntaje}} pts</td>
+                            <td class="td-resultado">
+                                {{#gano}}<span class="resultado gano">Ganó</span>{{/gano}}
+                                {{#perdio}}<span class="resultado perdio">Perdió</span>{{/perdio}}
+                            </td>
+                        </tr>
+                    {{/partidas}}
+                    </tbody>
+                </table>
+            </div>
+        {{/con_partidas}}
+    </section>
+
 </main>
 
 {{>footer}}
