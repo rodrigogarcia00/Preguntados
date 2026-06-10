@@ -9,7 +9,7 @@ class UsuarioModel {
 
     public function getByUsername($username) {
         $sql = "SELECT * FROM usuarios WHERE username = ?";
-        log::info("UsuarioModel::getByUsername username: $username");
+        Log::info("UsuarioModel::getByUsername username: $username");
         $filas = $this->database->query($sql, [$username]);
         return !empty($filas) ? $filas[0] : null;
     }
