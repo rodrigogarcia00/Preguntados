@@ -1,15 +1,20 @@
 <?php
 class LoginController{
+    private const LOGIN_VIEW = "/login/ver";
     private $renderer;
     private $usuarioModel;
     private $ubicacionModel;
+    private $mailModel;
     private $request;
+    private $baseUrl;
 
-    public function __construct($renderer, $usuarioModel, $ubicacionModel, $request) {
+    public function __construct($renderer, $usuarioModel, $ubicacionModel, $baseUrl, $mailModel, $request) {
         $this->renderer = $renderer;
         $this->usuarioModel = $usuarioModel;
         $this->ubicacionModel = $ubicacionModel;
+        $this->mailModel = $mailModel;
         $this->request = $request;
+        $this->baseUrl = $baseUrl;
     }
 
     public function verRegistro() {
@@ -58,8 +63,19 @@ class LoginController{
         }
 
         Log::info("LoginController::registrar - nombre=$nombre");
-        $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_DEFAULT), $pais, $ciudad, $foto);
-        Redirect::to("/login/ver");
+
+        $codigoVerificacion = bin2hex(random_bytes(16));
+        $usuarioId = $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_DEFAULT), $pais, $ciudad, $foto, $codigoVerificacion);
+        
+        $link = $this->baseUrl . "/usuario/validar?id=$usuarioId&codigo=$codigoVerificacion";
+        $correoEnviado = $this->mailModel->enviarCorreoVerificacion($email, $link, $nombre);
+        if ($correoEnviado) {
+            $this->renderer->render("login", ["avisoActivacion" => "Se ha enviado un correo de verificación a tu dirección de correo electrónico."]);
+            return;
+        } else {
+            Log::error("LoginController::registrar - error enviando correo a $email");
+            $this->renderer->render("login", ["avisoActivacion" => "No se pudo enviar el correo de verificación. Contactá al soporte."]);
+        }
         exit;
     }
 
@@ -77,17 +93,24 @@ class LoginController{
         if (empty($username) || empty($password)) {
             session_start();
             $_SESSION["error"] = "Complete todos los campos.";
-            Redirect::to("/login/ver");
+            Redirect::to(self::LOGIN_VIEW);
             return;
         }
 
         $usuario = $this->usuarioModel->getByUsername($username);
 
+        if ($usuario["activo"] == 0) {
+            session_start();
+            $_SESSION["error"] = "Debés activar tu cuenta desde el correo electrónico.";
+            Redirect::to("/login/ver");
+            return;
+        }
+
         if ($usuario === null || !password_verify($password, $usuario["password"])) {
             session_start();
             $_SESSION["error"] = "Usuario o contraseña incorrectos.";
             Log::warning("LoginController::validar - credenciales incorrectas: $username");
-            Redirect::to("/login/ver");
+            Redirect::to(self::LOGIN_VIEW);
             return;
         }
 
@@ -104,7 +127,7 @@ class LoginController{
         session_start();
         session_destroy();
 
-        Redirect::to("/login/ver");
+        Redirect::to(self::LOGIN_VIEW);
     }
 
     private function procesarFoto() {

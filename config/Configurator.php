@@ -8,14 +8,9 @@ class Configurator {
         $this->config = parse_ini_file("config/config.ini");
     }
 
-    public function getVikingoController()
-    {
-        return new VikingoController($this->getVikingoModel(), $this->getRenderer(), new Request());
-    }
-
     public function getLoginController()
     {
-        return new LoginController($this->getRenderer(), $this->getUsuarioModel(), $this->getUbicacionModel(), new Request());
+        return new LoginController($this->getRenderer(), $this->getUsuarioModel(), $this->getUbicacionModel(), $this->config['base_url'], $this->getMailModel(), new Request());
     }
 
     public function getHomeController()
@@ -38,9 +33,8 @@ class Configurator {
         return new MustacheRenderer(__DIR__ . '/../view');
     }
 
-    private function getVikingoModel()
-    {
-        return new VikingoModel($this->getDatabase());
+    private function getMyMail() {
+        return new MyMail($this->config['mail_host'], $this->config['mail_username'], $this->config['mail_from_name'], $this->config['mail_password'], $this->config['mail_port']);
     }
 
     private function getUsuarioModel() {
@@ -64,5 +58,12 @@ class Configurator {
 
     public function getUbicacionModel() {
         return new UbicacionModel();
+    }
+    public function getUsuarioController() {
+        return new UsuarioController($this->getRenderer(), $this->getUsuarioModel(), new Request());
+    }
+
+    public function getMailModel() {
+        return new MailModel($this->getMyMail());
     }
 }

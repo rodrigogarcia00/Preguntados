@@ -47,6 +47,13 @@ body {
     margin-bottom: 1rem;
 }
 
+.auth-notification {
+    background: #91b0f3;
+    padding: 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
 .auth-form {
     text-align: left;
     gap: 1rem;
