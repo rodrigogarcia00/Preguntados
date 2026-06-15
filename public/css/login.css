@@ -177,6 +177,14 @@ body {
     color: #b00020;
 }
 
+#mapa-registro {
+    grid-column: 1 / 3;
+    height: 300px;
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
 @media (max-width: 768px) {
     .auth-container {
         padding: 1rem;

@@ -22,13 +22,6 @@ class LoginController{
     }
 
     public function registrar() {
-        $foto = $this->procesarFoto();
-
-        $ubicacion = $this->ubicacionModel->obtenerPaisYCiudadPorLatitudYLongitud(
-            $this->request->post("latitud"),
-            $this->request->post("longitud")
-        );
-
         $nombre = $this->request->post("nombre_completo");
         $anio_nacimiento = $this->request->post("anio_nacimiento");
         $sexo = $this->request->post("sexo");
@@ -36,47 +29,81 @@ class LoginController{
         $email = $this->request->post("correo");
         $password = $this->request->post("password");
         $confirm_password = $this->request->post("confirm_password");
-        $pais = $ubicacion["pais"];
-        $ciudad = $ubicacion["ciudad"];
 
-        if ($password != $confirm_password) {
+        $error = $this->validarDatosRegistro(
+            $anio_nacimiento,
+            $username,
+            $email,
+            $password,
+            $confirm_password
+        );
+
+        if ($error !== null) {
             $this->renderer->render("registro", [
-                "error" => "Las contraseñas no coinciden"
+                "error" => $error
             ]);
             return;
         }
 
-        if (!is_numeric($anio_nacimiento)) {
-            Log::warning("LoginController::registrar - año de nacimiento invalido: $anio_nacimiento");
-            Redirect::toIndex();
-            return;
-        }
+        $ubicacion = $this->ubicacionModel->obtenerPaisYCiudadPorLatitudYLongitud(
+            $this->request->post("latitud"),
+            $this->request->post("longitud")
+        );
 
-        if ($this->usuarioModel->existeUsername($username)) {
-            $this->renderer->render("registro", ["error" => "El nombre de usuario ya está en uso."]);
-            return;
-        }
-
-        if ($this->usuarioModel->existeEmail($email)) {
-            $this->renderer->render("registro", ["error" => "El correo ya está registrado."]);
-            return;
-        }
+        $foto = $this->procesarFoto();
+        $pais = $ubicacion["pais"];
+        $ciudad = $ubicacion["ciudad"];
 
         Log::info("LoginController::registrar - nombre=$nombre");
 
         $codigoVerificacion = bin2hex(random_bytes(16));
-        $usuarioId = $this->usuarioModel->registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, password_hash($password, PASSWORD_DEFAULT), $pais, $ciudad, $foto, $codigoVerificacion);
-        
+        $usuarioId = $this->usuarioModel->registrarUsuario(
+            $nombre,
+            $anio_nacimiento,
+            $sexo,
+            $username,
+            $email,
+            password_hash($password, PASSWORD_DEFAULT),
+            $pais,
+            $ciudad,
+            $foto,
+            $codigoVerificacion
+        );
+
         $link = $this->baseUrl . "/usuario/validar?id=$usuarioId&codigo=$codigoVerificacion";
         $correoEnviado = $this->mailModel->enviarCorreoVerificacion($email, $link, $nombre);
+
         if ($correoEnviado) {
-            $this->renderer->render("login", ["avisoActivacion" => "Se ha enviado un correo de verificación a tu dirección de correo electrónico."]);
-            return;
+            $this->renderer->render("login", [
+                "avisoActivacion" => "Se ha enviado un correo de verificación a tu dirección de correo electrónico."
+            ]);
         } else {
             Log::error("LoginController::registrar - error enviando correo a $email");
-            $this->renderer->render("login", ["avisoActivacion" => "No se pudo enviar el correo de verificación. Contactá al soporte."]);
+            $this->renderer->render("login", [
+                "avisoActivacion" => "No se pudo enviar el correo de verificación. Contactá al soporte."
+            ]);
         }
-        exit;
+    }
+
+    private function validarDatosRegistro($anio_nacimiento, $username, $email, $password, $confirm_password) {
+        if ($password != $confirm_password) {
+            return "Las contraseñas no coinciden";
+        }
+
+        if (!is_numeric($anio_nacimiento)) {
+            Log::warning("LoginController::registrar - año de nacimiento invalido: $anio_nacimiento");
+            return "El año de nacimiento no es válido.";
+        }
+
+        if ($this->usuarioModel->existeUsername($username)) {
+            return "El nombre de usuario ya está en uso.";
+        }
+
+        if ($this->usuarioModel->existeEmail($email)) {
+            return "El correo ya está registrado.";
+        }
+
+        return null;
     }
 
     public function ver() {
