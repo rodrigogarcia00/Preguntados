@@ -83,6 +83,68 @@ a { text-decoration: none; color: inherit; }
     color: #fff;
 }
 
+.landing-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.landing-title {
+    font-family: 'Cinzel', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+.landing-subtitle {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.btn-jugar {
+    display: inline-block;
+    background: var(--accent-green);
+    color: #0d0f1a;
+    font-family: 'Cinzel', serif;
+    font-weight: 800;
+    font-size: 24px;
+    padding: 20px 64px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+    letter-spacing: 0.05em;
+}
+
+.btn-jugar:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.landing-features {
+    margin-top: 56px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.feature-icon {
+    font-size: 28px;
+}
+
 .lobby-container {
     max-width: 1100px;
     margin: 0 auto;

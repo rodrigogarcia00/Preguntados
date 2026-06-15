@@ -43,7 +43,7 @@ class Configurator {
 
     public function getRouter()
     {
-        return new Router($this, 'login', 'verRegistro');
+        return new Router($this, 'landing', 'ver');
     }
 
     public function getOrDefault($controllerName, $defaultControllerName)
@@ -65,5 +65,9 @@ class Configurator {
 
     public function getMailModel() {
         return new MailModel($this->getMyMail());
+    }
+
+    public function getLandingController() {
+        return new LandingController($this->getRenderer());
     }
 }
