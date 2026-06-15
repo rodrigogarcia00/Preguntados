@@ -13,9 +13,9 @@
         <h1>Iniciar sesión</h1>
         <p class="auth-subtitle">Ingresá con tu cuenta para acceder al lobby.</p>
 
-        {{#error}}
-            <p class="auth-error">{{.}}</p>
-        {{/error}}
+        {{#avisoActivacion}}
+                <p class="auth-notification">{{.}}</p>
+        {{/avisoActivacion}}
 
         <form action="/login/validar" method="POST" class="auth-form">
             <div class="form-group">
@@ -27,6 +27,10 @@
                 <label>Contraseña</label>
                 <input type="password" name="password" required>
             </div>
+
+            {{#error}}
+                <p class="auth-error">{{.}}</p>
+            {{/error}}
 
             <button type="submit">Iniciar sesión</button>
         </form>

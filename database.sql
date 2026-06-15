@@ -1,9 +1,6 @@
 CREATE DATABASE IF NOT EXISTS preguntados;
 USE preguntados;
 
-DROP TABLE IF EXISTS usuario;
-DROP TABLE IF EXISTS partidas;
-
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -18,3 +15,6 @@ CREATE TABLE usuarios (
     puntaje_total INT DEFAULT 0,
     fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE usuarios ADD COLUMN activo TINYINT(1) DEFAULT 0;
+ALTER TABLE usuarios ADD COLUMN codigo_verificacion VARCHAR(255);

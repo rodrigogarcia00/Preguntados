@@ -4,6 +4,12 @@ class UbicacionModel
 {
 
     public function obtenerPaisYCiudadPorLatitudYLongitud($latitud, $longitud) {
+        if (empty($latitud) || empty($longitud)) {
+            return [
+                "pais" => "Desconocido",
+                "ciudad" => "Desconocida"
+            ];
+        }
         $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat="
             . urlencode($latitud)
             . "&lon="

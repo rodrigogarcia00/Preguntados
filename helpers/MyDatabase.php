@@ -23,6 +23,11 @@ class MyDatabase
         return $this->conexion->affected_rows;
     }
 
+    public function getLastInsertId()
+    {
+        return $this->conexion->insert_id;
+    }
+
     public function __destruct()
     {
         $this->conexion->close();
