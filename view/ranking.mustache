@@ -1,0 +1,45 @@
+{{>header}}
+
+<main class="ranking-container">
+
+    <section class="ranking-header">
+        <h1>🏆 Ranking global</h1>
+        <p>Puntajes acumulados totales de todos los jugadores.</p>
+    </section>
+
+    <section class="ranking-card">
+
+        <div class="ranking-table-header">
+            <span>Posición</span>
+            <span>Jugador</span>
+            <span>Puntaje</span>
+        </div>
+
+        {{#usuarios}}
+            <a href="/usuario/perfil?id={{id}}" class="ranking-row">
+
+                <div class="ranking-position">
+                    {{medalla}}
+                </div>
+
+                <div class="ranking-player">
+                    <img src="/public/uploads/{{foto}}" alt="{{username}}" class="ranking-avatar">
+
+                    <div>
+                        <strong>{{username}}</strong>
+                        <small>{{nombre}}</small>
+                    </div>
+                </div>
+
+                <div class="ranking-score">
+                    {{puntaje}}
+                </div>
+
+            </a>
+        {{/usuarios}}
+
+    </section>
+
+</main>
+
+{{>footer}}

@@ -82,4 +82,12 @@ class Configurator {
     public function getPreguntaModel() {
         return new PreguntaModel($this->getDatabase());
     }
+    public function getRankingController() {
+        return new RankingController($this->getRankingModel(), $this->getRenderer());
+    }
+
+    public function getRankingModel() {
+        return new RankingModel($this->getDatabase());
+    }
 }
+
