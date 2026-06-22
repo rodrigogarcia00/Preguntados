@@ -95,3 +95,6 @@ INSERT INTO respuestas (pregunta_id, texto, es_correcta) VALUES (@p3, 'Oxígeno'
 INSERT INTO preguntas (enunciado, categoria_id) VALUES ('¿Qué elemento químico tiene el símbolo "O"?', 5);
 SET @p6 = LAST_INSERT_ID();
 INSERT INTO respuestas (pregunta_id, texto, es_correcta) VALUES (@p6, 'Oro', 0), (@p6, 'Oxígeno', 1), (@p6, 'Osmio', 0), (@p6, 'Ozono', 0);
+
+ALTER TABLE usuarios ADD COLUMN latitud DECIMAL(10,8) NULL;
+ALTER TABLE usuarios ADD COLUMN longitud DECIMAL(11,8) NULL;
