@@ -98,3 +98,5 @@ INSERT INTO respuestas (pregunta_id, texto, es_correcta) VALUES (@p6, 'Oro', 0),
 
 ALTER TABLE usuarios ADD COLUMN latitud DECIMAL(10,8) NULL;
 ALTER TABLE usuarios ADD COLUMN longitud DECIMAL(11,8) NULL;
+ALTER TABLE partidas ADD COLUMN pregunta_actual_id INT;
+ALTER TABLE partidas ADD COLUMN pregunta_inicio DATETIME;
