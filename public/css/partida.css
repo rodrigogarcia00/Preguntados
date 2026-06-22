@@ -1,0 +1,84 @@
+.partida-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.partida-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.categoria {
+    display: inline-block;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.pregunta-texto {
+    margin: 25px 0;
+    font-size: 24px;
+}
+
+.nivel {
+    color: #666;
+}
+
+.respuestas-form {
+    display: grid;
+    gap: 15px;
+}
+
+.respuesta-btn {
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #eeeeee;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+}
+
+.respuesta-btn:hover {
+    background-color: #dddddd;
+}
+
+.btn-volver {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.resultado-card {
+    color: black;
+    text-align: center;
+}
+
+.resultado-mensaje {
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.resultado-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-volver {
+    padding: 12px 18px;
+    border-radius: 8px;
+    background-color: #eeeeee;
+    color: #222222;
+    text-decoration: none;
+}
+
+.btn-volver:hover {
+    background-color: #dddddd;
+}

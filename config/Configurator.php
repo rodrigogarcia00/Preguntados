@@ -70,4 +70,16 @@ class Configurator {
     public function getLandingController() {
         return new LandingController($this->getRenderer());
     }
+
+    public function getPartidaController() {
+        return new PartidaController($this->getRenderer(), $this->getPartidaModel(), $this->getPreguntaModel());
+    }
+
+    public function getPartidaModel() {
+        return new PartidaModel($this->getDatabase());
+    }
+
+    public function getPreguntaModel() {
+        return new PreguntaModel($this->getDatabase());
+    }
 }
