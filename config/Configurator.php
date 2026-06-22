@@ -15,7 +15,7 @@ class Configurator {
 
     public function getHomeController()
     {
-        return new HomeController($this->getRenderer());
+        return new HomeController($this->getRenderer(), $this->getPartidaModel());
     }
 
     private function getDatabase()
@@ -59,6 +59,7 @@ class Configurator {
     public function getUbicacionModel() {
         return new UbicacionModel();
     }
+
     public function getUsuarioController() {
         return new UsuarioController($this->getRenderer(), $this->getUsuarioModel(), new Request());
     }
