@@ -1,11 +1,13 @@
 <?php
 
-class PartidaModel
-{
+class PartidaModel {
     private $database;
 
-    public function __construct($database) {
+    private $preguntaModel;
+
+    public function __construct($database, $preguntaModel) {
         $this->database = $database;
+        $this->preguntaModel = $preguntaModel;
     }
 
     public function crear($usuarioId) {
@@ -30,6 +32,7 @@ class PartidaModel
 
         if ($respuestaId == $respuestaCorrecta["id"]) {
             $this->sumarPunto($partidaId);
+            $this->limpiarPreguntaActual($partidaId);
 
             return [
                 "correcta" => true,
@@ -81,6 +84,48 @@ class PartidaModel
             SET estado = 'FINALIZADA',
                 fecha_fin = NOW()
             WHERE id = ?";
+
+        $this->database->execute($sql, [$partidaId]);
+    }
+
+    public function obtenerPreguntaActualONueva($partidaId) {
+        $partida = $this->buscarPorId($partidaId);
+
+        if ($partida["pregunta_actual_id"] !== null) {
+            return $this->preguntaModel->obtenerPorIdConRespuestas($partida["pregunta_actual_id"]);
+        }
+
+        $pregunta = $this->preguntaModel->obtenerAleatoriaConRespuestas();
+
+        $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
+
+        return $pregunta;
+    }
+
+    private function buscarPorId($partidaId) {
+        $sql = "SELECT *
+                FROM partidas
+                WHERE id = ?";
+
+        $filas = $this->database->query($sql, [$partidaId]);
+
+        return $filas[0];
+    }
+
+    private function asignarPreguntaActual($partidaId, $preguntaId) {
+        $sql = "UPDATE partidas
+                SET pregunta_actual_id = ?,
+                    pregunta_inicio = ?
+                WHERE id = ?";
+
+        $this->database->execute($sql, [$preguntaId, date('Y-m-d H:i:s'), $partidaId]);
+    }
+
+    private function limpiarPreguntaActual($partidaId) {
+        $sql = "UPDATE partidas
+                SET pregunta_actual_id = NULL,
+                    pregunta_inicio = NULL
+                WHERE id = ?";
 
         $this->database->execute($sql, [$partidaId]);
     }
