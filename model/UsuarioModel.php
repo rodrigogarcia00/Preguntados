@@ -14,12 +14,12 @@ class UsuarioModel {
         return !empty($filas) ? $filas[0] : null;
     }
 
-    public function registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto, $codigo_verificacion) {
-        $sql = "INSERT INTO usuarios (nombre, anio_nacimiento, sexo, username, email, password, pais, ciudad, foto, codigo_verificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public function registrarUsuario($nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $latitud, $longitud, $foto, $codigo_verificacion) {
+        $sql = "INSERT INTO usuarios (nombre, anio_nacimiento, sexo, username, email, password, pais, ciudad, latitud, longitud, foto, codigo_verificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        Log::info("SQL: $sql [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto, $codigo_verificacion]");
+        Log::info("SQL: $sql [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $latitud, $longitud, $foto, $codigo_verificacion]");
 
-        $this->database->execute($sql, [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $foto, $codigo_verificacion]);
+        $this->database->execute($sql, [$nombre, $anio_nacimiento, $sexo, $username, $email, $password, $pais, $ciudad, $latitud, $longitud, $foto, $codigo_verificacion]);
 
         return $this->database->getLastInsertId();
     }
@@ -43,5 +43,14 @@ class UsuarioModel {
     public function activarUsuario($id) {
         $sql = "UPDATE usuarios SET activo = 1 WHERE id = ?";
         return $this->database->execute($sql, [$id]);
+    }
+
+    public function getPartidasDeUsuario($usuarioId) {
+        $sql = "SELECT p.id, p.puntaje, p.estado, p.fecha_inicio, p.fecha_fin
+                FROM partidas p
+                WHERE p.usuario_id = ?
+                ORDER BY p.fecha_inicio DESC";
+        Log::info("UsuarioModel::getPartidasDeUsuario id=$usuarioId");
+        return $this->database->query($sql, [$usuarioId]);
     }
 }

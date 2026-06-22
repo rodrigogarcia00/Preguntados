@@ -29,6 +29,8 @@ class LoginController{
         $email = $this->request->post("correo");
         $password = $this->request->post("password");
         $confirm_password = $this->request->post("confirm_password");
+        $latitud = $this->request->post("latitud");
+        $longitud = $this->request->post("longitud");
 
         $error = $this->validarDatosRegistro(
             $anio_nacimiento,
@@ -45,10 +47,7 @@ class LoginController{
             return;
         }
 
-        $ubicacion = $this->ubicacionModel->obtenerPaisYCiudadPorLatitudYLongitud(
-            $this->request->post("latitud"),
-            $this->request->post("longitud")
-        );
+        $ubicacion = $this->ubicacionModel->obtenerPaisYCiudadPorLatitudYLongitud($latitud, $longitud);
 
         $foto = $this->procesarFoto();
         $pais = $ubicacion["pais"];
@@ -66,6 +65,8 @@ class LoginController{
             password_hash($password, PASSWORD_DEFAULT),
             $pais,
             $ciudad,
+            $latitud,
+            $longitud,
             $foto,
             $codigoVerificacion
         );
