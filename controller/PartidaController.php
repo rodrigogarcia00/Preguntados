@@ -2,7 +2,7 @@
 
 class PartidaController {
 
-    private const string LOGIN_VER = "/login/ver";
+    private const LOGIN_VER = "/login/ver";
     private $renderer;
     private $partidaModel;
     private $preguntaModel;
