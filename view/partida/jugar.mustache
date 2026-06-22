@@ -1,0 +1,35 @@
+{{>header}}
+
+<main class="partida-container">
+
+    <section class="partida-card" style="border-top: 12px solid {{categoria_color}};">
+
+        <div class="categoria" style="background-color: {{categoria_color}};">
+            {{categoria_nombre}}
+        </div>
+
+        <h2 style="color: {{categoria_color}};">Nueva partida</h2>
+
+        <p style="color: {{categoria_color}};">
+            Puntaje actual: <strong>{{puntaje}}</strong>
+        </p>
+
+        <h3 class="pregunta-texto" style="color: {{categoria_color}};">
+            {{pregunta_enunciado}}
+        </h3>
+
+        <form method="POST" action="/partida/responder" class="respuestas-form">
+
+            <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
+
+            {{#respuestas}}
+                <button type="submit" name="respuesta_id" value="{{id}}" class="respuesta-btn">
+                    {{texto}}
+                </button>
+            {{/respuestas}}
+
+        </form>
+
+    </section>
+
+</main>

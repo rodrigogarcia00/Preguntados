@@ -1,0 +1,29 @@
+{{>header}}
+
+<main class="partida-container">
+
+    <section class="partida-card resultado-card">
+
+        <h2>Perdiste la partida</h2>
+
+        <p class="resultado-mensaje">
+            {{mensaje}}
+        </p>
+
+        <p>
+            Puntaje obtenido: <strong>{{puntaje}}</strong>
+        </p>
+
+        <p>
+            La respuesta correcta era:
+            <strong>{{respuesta_correcta}}</strong>
+        </p>
+
+        <div class="resultado-acciones">
+            <a href="/partida/nueva" class="btn-volver">Jugar otra vez</a>
+            <a href="/home/ver" class="btn-volver">Volver al inicio</a>
+        </div>
+
+    </section>
+
+</main>
