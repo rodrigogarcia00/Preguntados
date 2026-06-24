@@ -1,0 +1,101 @@
+{{>header}}
+
+<main class="lobby-container">
+
+    <section class="welcome-panel">
+        <div class="welcome-left">
+            <div class="avatar-wrapper">
+                <img src="/public/img/perfil-icono.png" alt="Avatar" class="avatar">
+            </div>
+            <div class="welcome-info">
+                {{#es_mi_perfil}}
+                    <p class="welcome-label">Tu perfil</p>
+                {{/es_mi_perfil}}
+                {{^es_mi_perfil}}
+                    <p class="welcome-label">Perfil de jugador</p>
+                {{/es_mi_perfil}}
+                <h1 class="welcome-name">{{nombre}}</h1>
+                <p class="rank-position">@{{username}}</p>
+                <div class="rank-badge">
+                    <span class="rank-icon">⭐</span>
+                    <span class="rank-score">{{puntaje}} puntos</span>
+                </div>
+                <p class="rank-position">📍 {{ciudad}}, {{pais}}</p>
+
+                {{#con_mapa}}
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+                    <div id="mapa-perfil" style="height: 180px; width: 100%; max-width: 320px; border-radius: 8px; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const lat = {{latitud}};
+                            const lng = {{longitud}};
+
+                            const mapa = L.map("mapa-perfil").setView([lat, lng], 13);
+                            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                                attribution: "© OpenStreetMap"
+                            }).addTo(mapa);
+                            L.marker([lat, lng]).addTo(mapa);
+                        });
+                    </script>
+                {{/con_mapa}}
+                {{^con_mapa}}
+                    <p class="rank-position">📍 Ubicación exacta no registrada</p>
+                {{/con_mapa}}
+            </div>
+        </div>
+
+
+        <div class="trampitas-panel">
+            <p class="trampitas-label">Compartir perfil</p>
+            <img src="https://quickchart.io/qr?text=http://preguntados-unlam.infinityfreeapp.com/usuario/verPerfil?id={{usuario_id}}&size=150" alt="Codigo QR del perfil">
+            {{! Para que funcione en nuestra página habría que poner preguntados-unlam.infinityfreeapp.com/ }}
+            {{! Para que funcione en nuestra pc habría que poner localhost/ }}
+        </div>
+    </section>
+
+    <section class="history-section">
+        <h2 class="section-title">📋 Partidas jugadas</h2>
+
+        {{#sin_partidas}}
+            <div class="empty-history">
+                <p>Todavía no jugó ninguna partida.</p>
+            </div>
+        {{/sin_partidas}}
+
+        {{#con_partidas}}
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Puntaje</th>
+                        <th>Resultado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {{#partidas}}
+                            <tr>
+                                <td class="td-fecha">{{fecha_inicio}}</td>
+                                <td class="td-puntaje">{{puntaje}}</td>
+                                <td class="resultado">
+                                    {{#gano}}<span class="resultado gano">Ganó</span>{{/gano}}
+                                    {{#perdio}}<span class="resultado perdio">Perdió</span>{{/perdio}}
+                                </td>
+                            </tr>
+                        {{/partidas}}
+                    </tbody>
+                </table>
+            </div>
+        {{/con_partidas}}
+    </section>
+
+    <div style="text-align: center; margin-top: 8px;">
+        <a href="/home/ver" class="action-card action-play" style="display:inline-flex; width:auto; padding: 12px 32px;">
+            ← Volver al lobby
+        </a>
+    </div>
+
+</main>
+
+{{>footer}}

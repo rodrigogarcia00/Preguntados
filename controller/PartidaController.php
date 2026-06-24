@@ -1,7 +1,8 @@
 <?php
 
-class PartidaController
-{
+class PartidaController {
+
+    private const LOGIN_VER = "/login/ver";
     private $renderer;
     private $partidaModel;
     private $preguntaModel;
@@ -16,7 +17,7 @@ class PartidaController
         session_start();
 
         if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
+            Redirect::to(self::LOGIN_VER);
         }
 
         $usuarioId = $_SESSION["usuario_id"];
@@ -25,14 +26,14 @@ class PartidaController
 
         $_SESSION["partida_id"] = $partidaId;
 
-        $this->mostrarPregunta($partidaId);
+        Redirect::to("/partida/jugar");
     }
 
     public function responder() {
         session_start();
 
         if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
+            Redirect::to(self::LOGIN_VER);
         }
 
         if (!isset($_SESSION["partida_id"])) {
@@ -60,7 +61,7 @@ class PartidaController
     }
 
     private function mostrarPregunta($partidaId) {
-        $pregunta = $this->preguntaModel->obtenerAleatoriaConRespuestas();
+        $pregunta = $this->partidaModel->obtenerPreguntaActualONueva($partidaId);
 
         $puntaje = $this->partidaModel->obtenerPuntaje($partidaId);
 
@@ -72,6 +73,20 @@ class PartidaController
             "respuestas" => $pregunta["respuestas"],
             "puntaje" => $puntaje
         ]);
+    }
+
+    public function jugar() {
+        session_start();
+
+        if (!isset($_SESSION["usuario_id"])) {
+            Redirect::to(self::LOGIN_VER);
+        }
+
+        if (!isset($_SESSION["partida_id"])) {
+            Redirect::to("/partida/nueva");
+        }
+
+        $this->mostrarPregunta($_SESSION["partida_id"]);
     }
     
 }

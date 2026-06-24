@@ -1,11 +1,9 @@
 <?php
 
-class PreguntaModel
-{
+class PreguntaModel {
     private $database;
 
-    public function __construct($database)
-    {
+    public function __construct($database) {
         $this->database = $database;
     }
 
@@ -21,8 +19,7 @@ class PreguntaModel
         return $pregunta;
     }
 
-    private function obtenerPreguntaAleatoria()
-    {
+    private function obtenerPreguntaAleatoria() {
         $sql = "SELECT p.id,
                 p.enunciado,
                 p.nivel,
@@ -38,8 +35,7 @@ class PreguntaModel
         return !empty($filas) ? $filas[0] : null;
     }
 
-    private function obtenerRespuestasDePregunta($preguntaId)
-    {
+    private function obtenerRespuestasDePregunta($preguntaId) {
         $sql = "SELECT id, texto
             FROM respuestas
             WHERE pregunta_id = ?
@@ -48,5 +44,28 @@ class PreguntaModel
         $filas = $this->database->query($sql, [$preguntaId]);
 
         return !empty($filas) ? $filas : null;
+    }
+
+    public function obtenerPorIdConRespuestas($preguntaId) {
+        $pregunta = $this->obtenerPreguntaPorId($preguntaId);
+
+        $pregunta["respuestas"] = $this->obtenerRespuestasDePregunta($pregunta["id"]);
+
+        return $pregunta;
+    }
+
+    private function obtenerPreguntaPorId($preguntaId) {
+        $sql = "SELECT p.id,
+                    p.enunciado,
+                    p.nivel,
+                    c.nombre AS categoria_nombre,
+                    c.color AS categoria_color
+                FROM preguntas p
+                INNER JOIN categorias c ON c.id = p.categoria_id
+                WHERE p.id = ?";
+
+        $filas = $this->database->query($sql, [$preguntaId]);
+
+        return $filas[0];
     }
 }

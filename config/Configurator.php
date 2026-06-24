@@ -76,7 +76,7 @@ class Configurator {
     }
 
     public function getPartidaModel() {
-        return new PartidaModel($this->getDatabase());
+        return new PartidaModel($this->getDatabase(), $this->getPreguntaModel());
     }
 
     public function getPreguntaModel() {
