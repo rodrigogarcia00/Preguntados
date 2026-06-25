@@ -95,11 +95,15 @@ class PartidaModel {
             return $this->preguntaModel->obtenerPorIdConRespuestas($partida["pregunta_actual_id"]);
         }
 
-        $pregunta = $this->preguntaModel->obtenerAleatoriaConRespuestas();
+        $usuarioId = $partida["usuario_id"];
+
+        $pregunta = $this->preguntaModel->obtenerPreguntaParaUsuario($usuarioId);
 
         $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
 
-        return $pregunta;
+        $this->preguntaModel->guardarPreguntaVista($usuarioId, $pregunta["id"]);
+
+        return $this->preguntaModel->obtenerPorIdConRespuestas($pregunta["id"]);
     }
 
     private function buscarPorId($partidaId) {

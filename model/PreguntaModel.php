@@ -68,4 +68,45 @@ class PreguntaModel {
 
         return $filas[0];
     }
+
+    public function obtenerPreguntaParaUsuario($usuarioId) {
+        $pregunta = $this->obtenerPreguntaNoVista($usuarioId);
+
+        if ($pregunta != null) {
+            return $pregunta;
+        }
+
+        return $this->obtenerPreguntaAleatoria();
+    }
+
+    public function obtenerPreguntaNoVista($usuarioId) {
+        $sql = "SELECT p.*
+                FROM preguntas p
+                WHERE p.id NOT IN (
+                    SELECT pregunta_id
+                    FROM usuario_pregunta_vista
+                    WHERE usuario_id = ?
+                )
+                ORDER BY RAND()
+                LIMIT 1";
+
+        $resultado = $this->database->query($sql, [$usuarioId]);
+
+        return $resultado[0] ?? null;
+    }
+    public function guardarPreguntaVista($usuarioId, $preguntaId) {
+        if (!$this->yaVioPregunta($usuarioId, $preguntaId)) {
+            $sql = "INSERT INTO usuario_pregunta_vista (usuario_id, pregunta_id) VALUES (?, ?)";
+
+            $this->database->execute($sql, [$usuarioId, $preguntaId]);
+        }
+    }
+    public function yaVioPregunta($usuarioId, $preguntaId) {
+        $sql = "SELECT id FROM usuario_pregunta_vista WHERE usuario_id = ? AND pregunta_id = ?";
+
+        $resultado = $this->database->query($sql, [$usuarioId, $preguntaId]);
+
+        return count($resultado) > 0;
+    }
+
 }

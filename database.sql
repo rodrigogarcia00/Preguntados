@@ -100,3 +100,10 @@ ALTER TABLE usuarios ADD COLUMN latitud DECIMAL(10,8) NULL;
 ALTER TABLE usuarios ADD COLUMN longitud DECIMAL(11,8) NULL;
 ALTER TABLE partidas ADD COLUMN pregunta_actual_id INT;
 ALTER TABLE partidas ADD COLUMN pregunta_inicio DATETIME;
+
+CREATE TABLE usuario_pregunta_vista (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    pregunta_id INT NOT NULL,
+    fecha_vista DATETIME DEFAULT CURRENT_TIMESTAMP
+);
