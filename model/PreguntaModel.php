@@ -49,6 +49,8 @@ class PreguntaModel {
     public function obtenerPorIdConRespuestas($preguntaId) {
         $pregunta = $this->obtenerPreguntaPorId($preguntaId);
 
+        $pregunta["nivel_descripcion"] = $this->obtenerDescripcionNivel($pregunta["nivel"]);
+
         $pregunta["respuestas"] = $this->obtenerRespuestasDePregunta($pregunta["id"]);
 
         return $pregunta;
@@ -107,6 +109,72 @@ class PreguntaModel {
         $resultado = $this->database->query($sql, [$usuarioId, $preguntaId]);
 
         return count($resultado) > 0;
+    }
+
+    public function actualizarNivel($preguntaId, $respondioCorrectamente) {
+        if ($respondioCorrectamente) {
+            $sql = "UPDATE preguntas
+                    SET veces_respondida = veces_respondida + 1,
+                        veces_correcta = veces_correcta + 1
+                    WHERE id = ?";
+        } else {
+            $sql = "UPDATE preguntas
+                    SET veces_respondida = veces_respondida + 1
+                    WHERE id = ?";
+        }
+
+        $this->database->execute($sql, [$preguntaId]);
+
+        $this->recalcularNivel($preguntaId);
+    }
+
+    private function recalcularNivel($preguntaId) {
+        $sql = "SELECT veces_respondida, veces_correcta
+                FROM preguntas
+                WHERE id = ?";
+
+        $filas = $this->database->query($sql, [$preguntaId]);
+
+        if (empty($filas)) {
+            return;
+        }
+
+        $pregunta = $filas[0];
+
+        $vecesRespondida = (int) $pregunta["veces_respondida"];
+        $vecesCorrecta = (int) $pregunta["veces_correcta"];
+
+        if ($vecesRespondida < 10) {
+            $nivel = 0.40;
+        } else {
+            $vecesIncorrecta = $vecesRespondida - $vecesCorrecta;
+            $nivel = $vecesIncorrecta / $vecesRespondida;
+            $nivel = round($nivel, 2);
+        }
+
+        $sql = "UPDATE preguntas
+                SET nivel = ?
+                WHERE id = ?";
+
+        $this->database->execute($sql, [$nivel, $preguntaId]);
+    }
+
+    public function obtenerDescripcionNivel($nivel) {
+        $nivel = (float) $nivel;
+
+        if ($nivel <= 0.25) {
+            return "Fácil";
+        }
+
+        if ($nivel <= 0.50) {
+            return "Medio";
+        }
+
+        if ($nivel <= 0.75) {
+            return "Difícil";
+        }
+
+        return "Muy difícil";
     }
 
 }

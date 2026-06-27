@@ -107,3 +107,7 @@ CREATE TABLE usuario_pregunta_vista (
     pregunta_id INT NOT NULL,
     fecha_vista DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE preguntas MODIFY nivel DECIMAL(3,2) NOT NULL DEFAULT 0.40;
+ALTER TABLE preguntas ADD COLUMN veces_respondida INT NOT NULL DEFAULT 0;
+ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;

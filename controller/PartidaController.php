@@ -71,7 +71,8 @@ class PartidaController {
             "categoria_nombre" => $pregunta["categoria_nombre"],
             "categoria_color" => $pregunta["categoria_color"],
             "respuestas" => $pregunta["respuestas"],
-            "puntaje" => $puntaje
+            "puntaje" => $puntaje,
+            "nivel_descripcion" => $pregunta["nivel_descripcion"]
         ]);
     }
 

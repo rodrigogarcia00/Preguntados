@@ -30,7 +30,11 @@ class PartidaModel {
             ];
         }
 
-        if ($respuestaId == $respuestaCorrecta["id"]) {
+        $respondioCorrectamente = $respuestaId == $respuestaCorrecta["id"];
+
+        $this->preguntaModel->actualizarNivel($preguntaId, $respondioCorrectamente);
+
+        if ($respondioCorrectamente) {
             $this->sumarPunto($partidaId);
             $this->limpiarPreguntaActual($partidaId);
 
