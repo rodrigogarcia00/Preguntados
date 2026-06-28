@@ -6,6 +6,7 @@ class PartidaController {
     private $renderer;
     private $partidaModel;
     private $preguntaModel;
+    private const TIEMPO_LIMITE_PREGUNTA = 30;
 
     public function __construct($renderer, $partidaModel, $preguntaModel) {
         $this->renderer = $renderer;
@@ -36,26 +37,33 @@ class PartidaController {
             Redirect::to(self::LOGIN_VER);
         }
 
-        if (!isset($_SESSION["partida_id"])) {
-            Redirect::to("/home/ver");
-        }
-
-        if (!isset($_POST["pregunta_id"]) || !isset($_POST["respuesta_id"])) {
+        if (!isset($_SESSION["partida_id"]) || !isset($_POST["pregunta_id"])) {
             Redirect::to("/home/ver");
         }
 
         $partidaId = $_SESSION["partida_id"];
         $preguntaId = $_POST["pregunta_id"];
-        $respuestaId = $_POST["respuesta_id"];
+        $respuestaId = $_POST["respuesta_id"] ?? null;
 
-        $resultado = $this->partidaModel->responder($partidaId, $preguntaId, $respuestaId);
+        $resultadoFueraTiempo = $this->verificarYProcesarTiempoAgotado($partidaId, $preguntaId);
 
-        if ($resultado["correcta"]) {
-            $this->mostrarPregunta($partidaId);
+        if ($resultadoFueraTiempo !== null) {
+            $this->renderer->render("partida/resultado", $resultadoFueraTiempo);
             return;
         }
 
-        unset($_SESSION["partida_id"]);
+        if ($respuestaId === null) {
+            Redirect::to("/home/ver");
+        }
+
+        $resultado = $this->partidaModel->responder($partidaId, $preguntaId, $respuestaId);
+
+        unset($_SESSION["pregunta_inicio"]);
+        unset($_SESSION["pregunta_actual_timer_id"]);
+
+        if ($resultado["correcta"]) {
+            Redirect::to("/partida/jugar");
+        }
 
         $this->renderer->render("partida/resultado", $resultado);
     }
@@ -65,6 +73,9 @@ class PartidaController {
 
         $puntaje = $this->partidaModel->obtenerPuntaje($partidaId);
 
+        $preguntaId = $pregunta["id"];
+        $tiempoRestante = $this->calcularTiempoRestante($preguntaId);
+
         $this->renderer->render("partida/jugar", [
             "pregunta_id" => $pregunta["id"],
             "pregunta_enunciado" => $pregunta["enunciado"],
@@ -72,8 +83,42 @@ class PartidaController {
             "categoria_color" => $pregunta["categoria_color"],
             "respuestas" => $pregunta["respuestas"],
             "puntaje" => $puntaje,
-            "nivel_descripcion" => $pregunta["nivel_descripcion"]
+            "nivel_descripcion" => $pregunta["nivel_descripcion"],
+            "tiempo_limite" => $tiempoRestante
         ]);
+    }
+
+    private function calcularTiempoRestante($preguntaId) {
+        if (!isset($_SESSION["pregunta_inicio"]) || !isset($_SESSION["pregunta_actual_timer_id"]) || $_SESSION["pregunta_actual_timer_id"] != $preguntaId) {
+            $_SESSION["pregunta_inicio"] = time();
+            $_SESSION["pregunta_actual_timer_id"] = $preguntaId;
+        }
+
+        $segundosTranscurridos = time() - $_SESSION["pregunta_inicio"];
+        $tiempoRestante = self::TIEMPO_LIMITE_PREGUNTA - $segundosTranscurridos;
+
+        if ($tiempoRestante < 0) {
+            $tiempoRestante = 0;
+        }
+
+        return $tiempoRestante;
+    }
+
+    private function verificarYProcesarTiempoAgotado($partidaId, $preguntaId) {
+        $inicio = $_SESSION["pregunta_inicio"] ?? null;
+
+        $tiempoAgotado = $inicio === null || (time() - $inicio) >= self::TIEMPO_LIMITE_PREGUNTA;
+
+        if ($tiempoAgotado) {
+            $resultado = $this->partidaModel->responderFueraDeTiempo($partidaId, $preguntaId);
+
+            unset($_SESSION["pregunta_inicio"]);
+            unset($_SESSION["pregunta_actual_timer_id"]);
+
+            return $resultado;
+        }
+
+        return null;
     }
 
     public function jugar() {

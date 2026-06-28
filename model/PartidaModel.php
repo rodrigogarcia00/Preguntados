@@ -137,4 +137,19 @@ class PartidaModel {
 
         $this->database->execute($sql, [$partidaId]);
     }
+
+    public function responderFueraDeTiempo($partidaId, $preguntaId) {
+        $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
+
+        $this->preguntaModel->actualizarNivel($preguntaId, false);
+
+        $this->finalizar($partidaId);
+
+        return [
+            "correcta" => false,
+            "puntaje" => $this->obtenerPuntaje($partidaId),
+            "mensaje" => "Se terminó el tiempo.",
+            "respuesta_correcta" => $respuestaCorrecta["texto"]
+        ];
+    }
 }
