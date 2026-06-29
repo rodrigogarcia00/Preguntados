@@ -30,7 +30,13 @@ class PartidaModel {
 
         $respondioCorrectamente = $respuestaId == $respuestaCorrecta["id"];
 
+        // Obtenemos el usuario de esta partida
+        $partida = $this->buscarPorId($partidaId);
+        $usuarioId = $partida["usuario_id"];
+
         $this->preguntaModel->actualizarNivel($preguntaId, $respondioCorrectamente);
+
+        $this->actualizarEstadisticasUsuario($usuarioId, $respondioCorrectamente);
 
         if ($respondioCorrectamente) {
             $this->sumarPunto($partidaId);
@@ -154,7 +160,12 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
     public function responderFueraDeTiempo($partidaId, $preguntaId) {
         $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
 
+        $partida = $this->buscarPorId($partidaId);
+        $usuarioId = $partida["usuario_id"];
+
         $this->preguntaModel->actualizarNivel($preguntaId, false);
+
+        $this->actualizarEstadisticasUsuario($usuarioId, false);
 
         $this->finalizar($partidaId);
 
@@ -164,5 +175,19 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
             "mensaje" => "Se terminó el tiempo.",
             "respuesta_correcta" => $respuestaCorrecta["texto"]
         ];
+    }
+
+    private function actualizarEstadisticasUsuario($usuarioId, $esCorrecta) {
+        if ($esCorrecta) {
+            $sql = "UPDATE usuarios 
+                    SET preguntas_respondidas = preguntas_respondidas + 1,
+                        respuestas_correctas = respuestas_correctas + 1
+                    WHERE id = ?";
+        } else {
+            $sql = "UPDATE usuarios 
+                    SET preguntas_respondidas = preguntas_respondidas + 1
+                    WHERE id = ?";
+        }
+        $this->database->execute($sql, [$usuarioId]);
     }
 }

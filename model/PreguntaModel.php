@@ -7,6 +7,25 @@ class PreguntaModel {
         $this->database = $database;
     }
 
+    private function obtenerNivelUsuario($usuarioId) {
+        $sql = "SELECT preguntas_respondidas, respuestas_correctas FROM usuarios WHERE id = ?";
+        $filas = $this->database->query($sql, [$usuarioId]);
+
+        if (empty($filas)) {
+            return 0.50;
+        }
+
+        $respondidas = (int) $filas[0]['preguntas_respondidas'];
+        $correctas = (int) $filas[0]['respuestas_correctas'];
+
+        if ($respondidas < 10) {
+            return 0.50; // Nivel medio si respondió menos de 10 preguntas
+        }
+
+        // Calculamos su porcentaje de aciertos (Nivel 0.00 a 1.00)
+        return round($correctas / $respondidas, 2);
+    }
+
     public function obtenerAleatoriaConRespuestas() {
         $pregunta = $this->obtenerPreguntaAleatoria();
 
@@ -82,6 +101,12 @@ class PreguntaModel {
     }
 
     public function obtenerPreguntaNoVista($usuarioId) {
+        $nivelUsuario = $this->obtenerNivelUsuario($usuarioId);
+
+        $margenInferior = $nivelUsuario - 0.20;
+        $margenSuperior = $nivelUsuario + 0.20;
+
+        // Buscamos una pregunta NO VISTA que encaje con su nivel
         $sql = "SELECT p.*
                 FROM preguntas p
                 WHERE p.id NOT IN (
@@ -89,10 +114,25 @@ class PreguntaModel {
                     FROM usuario_pregunta_vista
                     WHERE usuario_id = ?
                 )
+                AND p.nivel BETWEEN ? AND ?
                 ORDER BY RAND()
                 LIMIT 1";
 
-        $resultado = $this->database->query($sql, [$usuarioId]);
+        $resultado = $this->database->query($sql, [$usuarioId, $margenInferior, $margenSuperior]);
+
+        // Si no hay preguntas de su nivel, le damos CUALQUIER pregunta que no haya visto
+        if (empty($resultado)) {
+            $sqlFallback = "SELECT p.*
+                            FROM preguntas p
+                            WHERE p.id NOT IN (
+                                SELECT pregunta_id
+                                FROM usuario_pregunta_vista
+                                WHERE usuario_id = ?
+                            )
+                            ORDER BY RAND()
+                            LIMIT 1";
+            $resultado = $this->database->query($sqlFallback, [$usuarioId]);
+        }
 
         return $resultado[0] ?? null;
     }

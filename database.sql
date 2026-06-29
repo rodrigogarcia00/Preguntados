@@ -111,3 +111,6 @@ CREATE TABLE usuario_pregunta_vista (
 ALTER TABLE preguntas MODIFY nivel DECIMAL(3,2) NOT NULL DEFAULT 0.40;
 ALTER TABLE preguntas ADD COLUMN veces_respondida INT NOT NULL DEFAULT 0;
 ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;
+
+ALTER TABLE usuarios ADD COLUMN preguntas_respondidas INT NOT NULL DEFAULT 0;
+ALTER TABLE usuarios ADD COLUMN respuestas_correctas INT NOT NULL DEFAULT 0;
