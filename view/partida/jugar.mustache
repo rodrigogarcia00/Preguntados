@@ -4,8 +4,14 @@
 
     <section class="partida-card" style="border-top: 12px solid {{categoria_color}};">
 
-        <div class="categoria" style="background-color: {{categoria_color}};">
-            {{categoria_nombre}}
+        <div class="partida-header-info">
+            <div class="categoria categoria-partida" style="background-color: {{categoria_color}};">
+                {{categoria_nombre}}
+            </div>
+
+            <div id="timer" class="timer-box" data-tiempo="{{tiempo_limite}}" style="border-color: {{categoria_color}}; color: {{categoria_color}};">
+                00:00
+            </div>
         </div>
 
         <h2 style="color: {{categoria_color}};">Nueva partida</h2>
@@ -13,12 +19,15 @@
         <p style="color: {{categoria_color}};">
             Puntaje actual: <strong>{{puntaje}}</strong>
         </p>
+        <p style="color: {{categoria_color}};">
+            Nivel de dificultad: <strong>{{nivel_descripcion}}</strong>
+        </p>
 
         <h3 class="pregunta-texto" style="color: {{categoria_color}};">
             {{pregunta_enunciado}}
         </h3>
 
-        <form method="POST" action="/partida/responder" class="respuestas-form">
+        <form method="POST" action="/partida/responder" class="respuestas-form" id="form-respuesta">
 
             <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
 
@@ -33,3 +42,5 @@
     </section>
 
 </main>
+<script src="/public/js/partida-timer.js"></script>
+{{>footer}}

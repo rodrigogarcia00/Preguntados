@@ -7,11 +7,11 @@ class MyDatabase
     public function __construct($hostname, $username, $password, $database)
     {
         $this->conexion = new mysqli($hostname, $username, $password, $database);
-
+      
         if ($this->conexion->connect_error) {
-            die("Error de conexión: " . $this->conexion->connect_error);
+          die("Error de conexión: " . $this->conexion->connect_error);
         }
-
+      
         $this->conexion->set_charset("utf8mb4");
     }
 

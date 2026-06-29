@@ -28,7 +28,11 @@ class PartidaModel {
             ];
         }
 
-        if ($respuestaId == $respuestaCorrecta["id"]) {
+        $respondioCorrectamente = $respuestaId == $respuestaCorrecta["id"];
+
+        $this->preguntaModel->actualizarNivel($preguntaId, $respondioCorrectamente);
+
+        if ($respondioCorrectamente) {
             $this->sumarPunto($partidaId);
             $this->limpiarPreguntaActual($partidaId);
             return [
@@ -119,9 +123,16 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
         if ($partida["pregunta_actual_id"] !== null) {
             return $this->preguntaModel->obtenerPorIdConRespuestas($partida["pregunta_actual_id"]);
         }
-        $pregunta = $this->preguntaModel->obtenerAleatoriaConRespuestas();
+
+        $usuarioId = $partida["usuario_id"];
+
+        $pregunta = $this->preguntaModel->obtenerPreguntaParaUsuario($usuarioId);
+
         $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
-        return $pregunta;
+
+        $this->preguntaModel->guardarPreguntaVista($usuarioId, $pregunta["id"]);
+
+        return $this->preguntaModel->obtenerPorIdConRespuestas($pregunta["id"]);
     }
 
     private function buscarPorId($partidaId) {
@@ -138,5 +149,20 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
     private function limpiarPreguntaActual($partidaId) {
         $sql = "UPDATE partidas SET pregunta_actual_id = NULL, pregunta_inicio = NULL WHERE id = ?";
         $this->database->execute($sql, [$partidaId]);
+    }
+
+    public function responderFueraDeTiempo($partidaId, $preguntaId) {
+        $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
+
+        $this->preguntaModel->actualizarNivel($preguntaId, false);
+
+        $this->finalizar($partidaId);
+
+        return [
+            "correcta" => false,
+            "puntaje" => $this->obtenerPuntaje($partidaId),
+            "mensaje" => "Se terminó el tiempo.",
+            "respuesta_correcta" => $respuestaCorrecta["texto"]
+        ];
     }
 }
