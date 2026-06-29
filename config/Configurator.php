@@ -15,7 +15,7 @@ class Configurator {
 
     public function getHomeController()
     {
-        return new HomeController($this->getRenderer());
+        return new HomeController($this->getRenderer(), $this->getPartidaModel());
     }
 
     private function getDatabase()
@@ -59,6 +59,7 @@ class Configurator {
     public function getUbicacionModel() {
         return new UbicacionModel();
     }
+
     public function getUsuarioController() {
         return new UsuarioController($this->getRenderer(), $this->getUsuarioModel(), new Request());
     }
@@ -82,4 +83,12 @@ class Configurator {
     public function getPreguntaModel() {
         return new PreguntaModel($this->getDatabase());
     }
+    public function getRankingController() {
+        return new RankingController($this->getRankingModel(), $this->getRenderer());
+    }
+
+    public function getRankingModel() {
+        return new RankingModel($this->getDatabase());
+    }
 }
+
