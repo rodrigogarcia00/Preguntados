@@ -494,6 +494,117 @@ footer, .footer {
     color: var(--text-muted);
     font-size: 13px;
 }
+.ranking-container {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 40px 20px 70px;
+}
+
+.ranking-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.ranking-header h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--text-main);
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.ranking-header p {
+    color: var(--text-muted);
+}
+
+.ranking-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.ranking-table-header {
+    display: grid;
+    grid-template-columns: 120px 1fr 160px;
+    padding: 18px 24px;
+    background: var(--bg-card-hover);
+    color: var(--text-label);
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+}
+
+.ranking-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 160px;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition), transform var(--transition);
+}
+
+.ranking-row:hover {
+    background: var(--bg-card-hover);
+    transform: translateX(4px);
+}
+
+.ranking-row:last-child {
+    border-bottom: none;
+}
+
+.ranking-position {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent-gold);
+}
+
+.ranking-player {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ranking-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-blue);
+    background: var(--bg-card-hover);
+}
+
+.ranking-player strong {
+    display: block;
+    color: var(--text-main);
+    font-size: 16px;
+}
+
+.ranking-player small {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.ranking-score {
+    color: var(--accent-gold);
+    font-weight: 800;
+    text-align: right;
+}
+
+@media (max-width: 700px) {
+    .ranking-table-header {
+        display: none;
+    }
+
+    .ranking-row {
+        grid-template-columns: 60px 1fr;
+        gap: 14px;
+    }
+
+    .ranking-score {
+        grid-column: 2;
+        text-align: left;
+    }
+}
 
 @media (max-width: 900px) {
     .main-actions {

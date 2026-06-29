@@ -85,9 +85,34 @@ class PartidaModel {
     }
 
     private function finalizar($partidaId) {
-        $sql = "UPDATE partidas SET estado = 'FINALIZADA', fecha_fin = NOW() WHERE id = ?";
-        $this->database->execute($sql, [$partidaId]);
+    $partida = $this->buscarPorId($partidaId);
+
+    if (!$partida || $partida["estado"] !== "ACTIVA") {
+        return;
     }
+
+    $sql = "UPDATE partidas
+            SET estado = 'FINALIZADA',
+                fecha_fin = NOW()
+            WHERE id = ?
+            AND estado = 'ACTIVA'";
+
+    $filasAfectadas = $this->database->execute($sql, [$partidaId]);
+
+    if ($filasAfectadas > 0) {
+        $this->sumarPuntajeTotalUsuario(
+            $partida["usuario_id"],
+            $partida["puntaje"]
+        );
+    }
+}
+private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
+    $sql = "UPDATE usuarios
+            SET puntaje_total = puntaje_total + ?
+            WHERE id = ?";
+
+    $this->database->execute($sql, [$puntaje, $usuarioId]);
+}
 
     public function obtenerPreguntaActualONueva($partidaId) {
         $partida = $this->buscarPorId($partidaId);
