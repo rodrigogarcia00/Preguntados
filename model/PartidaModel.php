@@ -2,7 +2,6 @@
 
 class PartidaModel {
     private $database;
-
     private $preguntaModel;
 
     public function __construct($database, $preguntaModel) {
@@ -21,7 +20,6 @@ class PartidaModel {
 
         if ($respuestaCorrecta === null) {
             $this->finalizar($partidaId);
-
             return [
                 "correcta" => false,
                 "puntaje" => $this->obtenerPuntaje($partidaId),
@@ -33,7 +31,6 @@ class PartidaModel {
         if ($respuestaId == $respuestaCorrecta["id"]) {
             $this->sumarPunto($partidaId);
             $this->limpiarPreguntaActual($partidaId);
-
             return [
                 "correcta" => true,
                 "puntaje" => $this->obtenerPuntaje($partidaId)
@@ -41,7 +38,6 @@ class PartidaModel {
         }
 
         $this->finalizar($partidaId);
-
         return [
             "correcta" => false,
             "puntaje" => $this->obtenerPuntaje($partidaId),
@@ -52,30 +48,39 @@ class PartidaModel {
 
     public function obtenerPuntaje($partidaId) {
         $sql = "SELECT puntaje FROM partidas WHERE id = ?";
-
         $filas = $this->database->query($sql, [$partidaId]);
-
         return !empty($filas) ? $filas[0]["puntaje"] : null;
     }
 
+    public function obtenerHistorialDeUsuario($usuarioId) {
+        $sql = "SELECT id, puntaje, estado, fecha_inicio, fecha_fin
+                FROM partidas
+                WHERE usuario_id = ?
+                ORDER BY fecha_inicio DESC
+                LIMIT 20";
+
+        $filas = $this->database->query($sql, [$usuarioId]);
+
+        return array_map(function($partida) {
+            return [
+                "id"       => $partida["id"],
+                "puntaje"  => $partida["puntaje"],
+                "fecha"    => date("d/m/Y", strtotime($partida["fecha_inicio"])),
+                "gano"     => $partida["estado"] === "FINALIZADA" && $partida["puntaje"] > 0,
+                "perdio"   => $partida["estado"] === "FINALIZADA" && $partida["puntaje"] == 0,
+                "en_curso" => $partida["estado"] === "ACTIVA",
+            ];
+        }, $filas);
+    }
+
     private function buscarRespuestaCorrecta($preguntaId) {
-        $sql = "SELECT id, texto
-            FROM respuestas
-            WHERE pregunta_id = ?
-            AND es_correcta = 1
-            LIMIT 1";
-
+        $sql = "SELECT id, texto FROM respuestas WHERE pregunta_id = ? AND es_correcta = 1 LIMIT 1";
         $filas = $this->database->query($sql, [$preguntaId]);
-
         return !empty($filas) ? $filas[0] : null;
     }
 
     private function sumarPunto($partidaId) {
-        $sql = "UPDATE partidas
-            SET puntaje = puntaje + 1
-            WHERE id = ?
-            AND estado = 'ACTIVA'";
-
+        $sql = "UPDATE partidas SET puntaje = puntaje + 1 WHERE id = ? AND estado = 'ACTIVA'";
         $this->database->execute($sql, [$partidaId]);
     }
 
@@ -111,43 +116,27 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
 
     public function obtenerPreguntaActualONueva($partidaId) {
         $partida = $this->buscarPorId($partidaId);
-
         if ($partida["pregunta_actual_id"] !== null) {
             return $this->preguntaModel->obtenerPorIdConRespuestas($partida["pregunta_actual_id"]);
         }
-
         $pregunta = $this->preguntaModel->obtenerAleatoriaConRespuestas();
-
         $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
-
         return $pregunta;
     }
 
     private function buscarPorId($partidaId) {
-        $sql = "SELECT *
-                FROM partidas
-                WHERE id = ?";
-
+        $sql = "SELECT * FROM partidas WHERE id = ?";
         $filas = $this->database->query($sql, [$partidaId]);
-
         return $filas[0];
     }
 
     private function asignarPreguntaActual($partidaId, $preguntaId) {
-        $sql = "UPDATE partidas
-                SET pregunta_actual_id = ?,
-                    pregunta_inicio = ?
-                WHERE id = ?";
-
+        $sql = "UPDATE partidas SET pregunta_actual_id = ?, pregunta_inicio = ? WHERE id = ?";
         $this->database->execute($sql, [$preguntaId, date('Y-m-d H:i:s'), $partidaId]);
     }
 
     private function limpiarPreguntaActual($partidaId) {
-        $sql = "UPDATE partidas
-                SET pregunta_actual_id = NULL,
-                    pregunta_inicio = NULL
-                WHERE id = ?";
-
+        $sql = "UPDATE partidas SET pregunta_actual_id = NULL, pregunta_inicio = NULL WHERE id = ?";
         $this->database->execute($sql, [$partidaId]);
     }
 }
