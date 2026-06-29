@@ -53,4 +53,10 @@ class UsuarioModel {
         Log::info("UsuarioModel::getPartidasDeUsuario id=$usuarioId");
         return $this->database->query($sql, [$usuarioId]);
     }
+
+    public function obtenerPosicionRanking($puntaje) {
+        $sql = "SELECT COUNT(*) + 1 as posicion FROM usuarios WHERE puntaje_total > ? AND activo = 1";
+        $filas = $this->database->query($sql, [$puntaje]);
+        return !empty($filas) ? $filas[0]['posicion'] : '-';
+    }
 }

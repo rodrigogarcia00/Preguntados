@@ -20,6 +20,7 @@
                     <span class="rank-icon">⭐</span>
                     <span class="rank-score">{{puntaje}} puntos</span>
                 </div>
+                <p class="rank-position">🏆 Posición #{{posicion}} en el ranking</p>
                 <p class="rank-position">📍 {{ciudad}}, {{pais}}</p>
 
                 {{#con_mapa}}
@@ -79,8 +80,8 @@
                                 <td class="td-fecha">{{fecha_inicio}}</td>
                                 <td class="td-puntaje">{{puntaje}}</td>
                                 <td class="resultado">
-                                    {{#gano}}<span class="resultado gano">Ganó</span>{{/gano}}
-                                    {{#perdio}}<span class="resultado perdio">Perdió</span>{{/perdio}}
+                                    {{#finalizada}}<span class="resultado perdio">Finalizada</span>{{/finalizada}}
+                                    {{#en_curso}}<span class="resultado">En curso</span>{{/en_curso}}
                                 </td>
                             </tr>
                         {{/partidas}}

@@ -70,8 +70,7 @@ class PartidaModel {
                 "id"       => $partida["id"],
                 "puntaje"  => $partida["puntaje"],
                 "fecha"    => date("d/m/Y", strtotime($partida["fecha_inicio"])),
-                "gano"     => $partida["estado"] === "FINALIZADA" && $partida["puntaje"] > 0,
-                "perdio"   => $partida["estado"] === "FINALIZADA" && $partida["puntaje"] == 0,
+                "finalizada" => $partida["estado"] === "FINALIZADA",
                 "en_curso" => $partida["estado"] === "ACTIVA",
             ];
         }, $filas);
@@ -164,5 +163,15 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
             "mensaje" => "Se terminó el tiempo.",
             "respuesta_correcta" => $respuestaCorrecta["texto"]
         ];
+    }
+
+    public function obtenerEstadisticasLobby($usuarioId) {
+        $sql = "SELECT puntaje_total, 
+                   (SELECT COUNT(*) + 1 FROM usuarios WHERE puntaje_total > u.puntaje_total AND activo = 1) as posicion
+            FROM usuarios u 
+            WHERE id = ?";
+
+        $filas = $this->database->query($sql, [$usuarioId]);
+        return !empty($filas) ? $filas[0] : ['puntaje_total' => 0, 'posicion' => '-'];
     }
 }

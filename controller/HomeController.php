@@ -20,8 +20,9 @@ class HomeController {
 
         Log::info("HomeController::ver - usuario: " . $_SESSION["username"]);
 
-        $puntaje   = $_SESSION["puntaje"]   ?? 0;
-        $posicion  = $_SESSION["posicion"]  ?? '-';
+        $estadisticas = $this->partidaModel->obtenerEstadisticasLobby($_SESSION["usuario_id"]);
+        $puntaje = $estadisticas['puntaje_total'];
+        $posicion = $estadisticas['posicion'];
         $trampitas = $_SESSION["trampitas"] ?? 0;
 
         $partidas = $this->partidaModel->obtenerHistorialDeUsuario($_SESSION["usuario_id"]);
