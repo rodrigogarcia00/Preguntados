@@ -66,6 +66,8 @@ class UsuarioController
         $id = (int) $id;
         $usuario = $this->usuarioModel->buscarPorId($id);
 
+        $posicion = $this->usuarioModel->obtenerPosicionRanking($usuario["puntaje_total"]);
+
         if (!$usuario) {
             Redirect::to("/home/ver");
             return;
@@ -74,8 +76,8 @@ class UsuarioController
         $partidas = $this->usuarioModel->getPartidasDeUsuario($id);
 
         $partidasProcesadas = array_map(function ($partida) {
-            $partida["gano"] = false; // Esto habría que cambiarlo mas adelante cuando hagamos el 1v1
-            $partida["perdio"] = ($partida["estado"] == "FINALIZADA");
+            $partida["finalizada"] = ($partida["estado"] == "FINALIZADA");
+            $partida["en_curso"] = ($partida["estado"] == "ACTIVA");
 
             return $partida;
         }, $partidas);
@@ -92,6 +94,7 @@ class UsuarioController
             "longitud"     => $usuario["longitud"],
             "con_mapa"     => (!empty($usuario["latitud"]) && !empty($usuario["longitud"])),
             "puntaje"      => $usuario["puntaje_total"],
+            "posicion"     => $posicion,
             "partidas"     => $partidasProcesadas,
             "con_partidas" => !empty($partidasProcesadas),
             "sin_partidas" => empty($partidasProcesadas),
