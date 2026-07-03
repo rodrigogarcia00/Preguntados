@@ -90,5 +90,12 @@ class Configurator {
     public function getRankingModel() {
         return new RankingModel($this->getDatabase());
     }
+    public function getAdminController() {
+    return new AdminController($this->getRenderer(), $this->getAdminModel(), new Request());
+}
+
+public function getAdminModel() {
+    return new AdminModel($this->getDatabase());
+}
 }
 

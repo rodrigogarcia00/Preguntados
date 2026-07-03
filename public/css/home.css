@@ -589,6 +589,148 @@ footer, .footer {
     font-weight: 800;
     text-align: right;
 }
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.admin-header h1 {
+    color: var(--text-main);
+    font-family: 'Cinzel', serif;
+}
+
+.admin-filtros {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-filtros select,
+.admin-filtros button {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.admin-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.admin-card span {
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.admin-card strong {
+    color: var(--accent-gold);
+    font-size: 30px;
+}
+
+.admin-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+}
+
+.admin-section h2 {
+    color: var(--text-main);
+    margin-bottom: 18px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+}
+
+.admin-table th {
+    color: var(--accent-gold);
+    text-align: left;
+}
+
+.admin-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.admin-bar-fill {
+    height: 100%;
+    background: var(--accent-gold);
+    border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+    .admin-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media print {
+    .header,
+    .footer,
+    .no-print,
+    .admin-card {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .admin-container {
+        padding: 0;
+    }
+
+    .admin-section {
+        box-shadow: none;
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        color: black !important;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .admin-bar {
+        display: none;
+    }
+}
 
 @media (max-width: 700px) {
     .ranking-table-header {
