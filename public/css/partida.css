@@ -99,3 +99,24 @@
     min-width: 70px;
     text-align: center;
 }
+
+.alerta-trampita {
+    background-color: #e8f8f5;
+    border: 1px solid #1abc9c;
+    color: #16a085;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+    /* Animación para que aparezca suavemente */
+    animation: aparecer 0.4s ease-out;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

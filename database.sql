@@ -111,3 +111,14 @@ CREATE TABLE usuario_pregunta_vista (
 ALTER TABLE preguntas MODIFY nivel DECIMAL(3,2) NOT NULL DEFAULT 0.40;
 ALTER TABLE preguntas ADD COLUMN veces_respondida INT NOT NULL DEFAULT 0;
 ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;
+
+ALTER TABLE usuarios ADD COLUMN trampitas INT DEFAULT 0;
+
+CREATE TABLE compras_trampitas (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   usuario_id INT NOT NULL,
+   cantidad INT NOT NULL,
+   precio_total DECIMAL(10,2) NOT NULL, /* Para guardar el dólar que cuesta */
+   fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
