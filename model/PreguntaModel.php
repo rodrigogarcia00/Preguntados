@@ -177,4 +177,17 @@ class PreguntaModel {
         return "Muy difícil";
     }
 
+    public function guardarPreguntaSugerida($usuarioId, $categoriaId, $pregunta, $opA, $opB, $opC, $opD, $correcta) {
+        $sql = "INSERT INTO preguntas_sugeridas 
+            (usuario_id, categoria_id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta) 
+            VALUES ('$usuarioId', '$categoriaId', '$pregunta', '$opA', '$opB', '$opC', '$opD', '$correcta')";
+
+        $this->database->execute($sql);
+    }
+
+    public function getCategorias() {
+        $sql = "SELECT * FROM categorias";
+        return $this->database->query($sql);
+    }
+
 }

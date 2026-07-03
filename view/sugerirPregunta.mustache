@@ -1,0 +1,46 @@
+{{>header}}
+
+<main class="sugerir-container">
+    <section class="sugerir-card">
+        <h2>Sugerir una nueva pregunta</h2>
+        <p>¡Ayudanos a hacer el juego más divertido!</p>
+
+        <form action="/pregunta/procesarSugerencia" method="POST" class="form-sugerir">
+
+            <label for="categoria_id">Categoría:</label>
+            <select name="categoria_id" id="categoria_id" required>
+                <option value="" disabled selected>Elegí una categoría</option>
+                {{#categorias}}
+                    <option value="{{id}}">{{nombre}}</option>
+                {{/categorias}}
+            </select>
+
+            <label for="pregunta">Pregunta:</label>
+            <input type="text" name="pregunta" id="pregunta" placeholder="Ej: ¿En qué año se fundó la UNLaM?" required>
+
+            <label for="opcion_a">Opción A:</label>
+            <input type="text" name="opcion_a" id="opcion_a" required>
+
+            <label for="opcion_b">Opción B:</label>
+            <input type="text" name="opcion_b" id="opcion_b" required>
+
+            <label for="opcion_c">Opción C:</label>
+            <input type="text" name="opcion_c" id="opcion_c" required>
+
+            <label for="opcion_d">Opción D:</label>
+            <input type="text" name="opcion_d" id="opcion_d" required>
+
+            <label for="respuesta_correcta">¿Cuál es la correcta?</label>
+            <select name="respuesta_correcta" id="respuesta_correcta" required>
+                <option value="A">Opción A</option>
+                <option value="B">Opción B</option>
+                <option value="C">Opción C</option>
+                <option value="D">Opción D</option>
+            </select>
+
+            <button type="submit" class="btn-primario">Enviar sugerencia</button>
+        </form>
+    </section>
+</main>
+
+{{>footer}}

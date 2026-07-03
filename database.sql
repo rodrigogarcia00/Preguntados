@@ -111,3 +111,19 @@ CREATE TABLE usuario_pregunta_vista (
 ALTER TABLE preguntas MODIFY nivel DECIMAL(3,2) NOT NULL DEFAULT 0.40;
 ALTER TABLE preguntas ADD COLUMN veces_respondida INT NOT NULL DEFAULT 0;
 ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;
+
+CREATE TABLE preguntas_sugeridas (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     usuario_id INT NOT NULL,
+     categoria_id INT NOT NULL,
+     pregunta VARCHAR(255) NOT NULL,
+     opcion_a VARCHAR(255) NOT NULL,
+     opcion_b VARCHAR(255) NOT NULL,
+     opcion_c VARCHAR(255) NOT NULL,
+     opcion_d VARCHAR(255) NOT NULL,
+     respuesta_correcta VARCHAR(1) NOT NULL,
+     estado VARCHAR(20) DEFAULT 'PENDIENTE',
+     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+     FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
