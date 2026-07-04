@@ -90,5 +90,9 @@ class Configurator {
     public function getRankingModel() {
         return new RankingModel($this->getDatabase());
     }
+
+    public function getPreguntaController() {
+        return new PreguntaController($this->getPreguntaModel(), $this->getRenderer());
+    }
 }
 

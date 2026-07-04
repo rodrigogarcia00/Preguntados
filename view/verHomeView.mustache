@@ -2,6 +2,13 @@
 
 <main class="lobby-container">
 
+    <!-- ALERTA DE ÉXITO (Solo aparece si existe la variable) -->
+    {{#mensaje_exito}}
+        <div class="alerta-exito">
+            <span>✅</span> {{mensaje_exito}}
+        </div>
+    {{/mensaje_exito}}
+
     <!-- PANEL DE BIENVENIDA -->
     <section class="welcome-panel">
         <div class="welcome-left">
@@ -44,9 +51,9 @@
             <span class="action-title">Ranking global</span>
             <span class="action-desc">Mirá cómo estás entre todos</span>
         </a>
-        <a href="/pregunta/crear" class="action-card action-create">
+        <a href="/pregunta/sugerir" class="action-card action-create">
             <span class="action-icon">✏</span>
-            <span class="action-title">Crear pregunta</span>
+            <span class="action-title">Sugerir pregunta</span>
             <span class="action-desc">Aportá preguntas al juego</span>
         </a>
     </section>
