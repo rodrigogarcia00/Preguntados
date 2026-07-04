@@ -115,10 +115,37 @@ ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;
 ALTER TABLE usuarios ADD COLUMN trampitas INT DEFAULT 0;
 
 CREATE TABLE compras_trampitas (
-   id INT AUTO_INCREMENT PRIMARY KEY,
-   usuario_id INT NOT NULL,
-   cantidad INT NOT NULL,
-   precio_total DECIMAL(10,2) NOT NULL, /* Para guardar el dólar que cuesta */
-   fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_total DECIMAL(10,2) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE preguntas_sugeridas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    categoria_id INT NOT NULL,
+    pregunta VARCHAR(255) NOT NULL,
+    opcion_a VARCHAR(255) NOT NULL,
+    opcion_b VARCHAR(255) NOT NULL,
+    opcion_c VARCHAR(255) NOT NULL,
+    opcion_d VARCHAR(255) NOT NULL,
+    respuesta_correcta VARCHAR(1) NOT NULL,
+    estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+CREATE TABLE reportes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pregunta_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    motivo VARCHAR(255) NOT NULL,
+    estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );

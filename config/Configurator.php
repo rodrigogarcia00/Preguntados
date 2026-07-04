@@ -90,9 +90,13 @@ class Configurator {
     public function getRankingModel() {
         return new RankingModel($this->getDatabase());
     }
-
+    
     public function getTrampitaController() {
         return new TrampitaController($this->getUsuarioModel());
+    }
+
+    public function getPreguntaController() {
+        return new PreguntaController($this->getPreguntaModel(), $this->getRenderer());
     }
 }
 

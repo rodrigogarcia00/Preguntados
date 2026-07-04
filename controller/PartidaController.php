@@ -153,20 +153,14 @@ class PartidaController {
         $usuarioId = $_SESSION["usuario_id"];
         $partidaId = $_SESSION["partida_id"];
 
-        // Verificamos que realmente tenga trampitas en la sesión
         if (isset($_SESSION["trampitas"]) && $_SESSION["trampitas"] > 0) {
-
-            // 1. Descontamos la trampita
             $this->usuarioModel->descontarTrampita($usuarioId);
             $_SESSION["trampitas"] -= 1;
 
-            // 2. Buscamos cuál es la respuesta correcta
             $respuestaCorrecta = $this->partidaModel->obtenerRespuestaCorrecta($preguntaId);
 
             if ($respuestaCorrecta) {
                 $this->partidaModel->responder($partidaId, $preguntaId, $respuestaCorrecta['id']);
-
-                // Preparamos el mensaje para la vista
                 $_SESSION['mensaje_trampita'] = "🃏 ¡Trampita usada! Sumaste 1 punto. La respuesta era: " . $respuestaCorrecta['texto'];
             }
 
@@ -177,6 +171,23 @@ class PartidaController {
         } else {
             Redirect::to("/home/ver");
         }
+    }
+
+    public function reportar() {
+        session_start();
+        if (!isset($_SESSION["usuario_id"])) {
+            Redirect::to(self::LOGIN_VER);
+        }
+
+        $preguntaId = $_POST["pregunta_id"] ?? null;
+        $motivo = $_POST["motivo"] ?? null;
+        $usuarioId = $_SESSION["usuario_id"];
+
+        if ($preguntaId && $motivo) {
+            $this->partidaModel->guardarReporte($preguntaId, $usuarioId, $motivo);
+        }
+
+        Redirect::to("/home/ver");
     }
     
 }

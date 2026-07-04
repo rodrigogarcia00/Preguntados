@@ -30,7 +30,7 @@ class HomeController {
         $mensaje_exito = null;
         if (isset($_GET['exito'])) {
             if ($_GET['exito'] == 'pregunta') {
-                $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto.";
+                $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto. ¡Gracias por colaborar!";
             } else if ($_GET['exito'] == 'compra') {
                 $mensaje_exito = "¡Compra exitosa! Ya tenés tu trampita lista para usar.";
             }
@@ -48,6 +48,8 @@ class HomeController {
 
             "partidas_pendientes" => false,
             "pendientes"          => [],
+
+            "mensaje_exito"       => $mensaje_exito
         ]);
     }
 }
