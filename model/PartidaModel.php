@@ -175,9 +175,14 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
         return !empty($filas) ? $filas[0] : ['puntaje_total' => 0, 'posicion' => '-'];
     }
 
+    public function obtenerRespuestaCorrecta($preguntaId) {
+        $sql = "SELECT id, texto FROM respuestas WHERE pregunta_id = '$preguntaId' AND es_correcta = 1";
+        $resultado = $this->database->query($sql);
+        return $resultado[0] ?? null;
+    }
+
     public function guardarReporte($preguntaId, $usuarioId, $motivo) {
         $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES ('$preguntaId', '$usuarioId', '$motivo')";
-
         $this->database->execute($sql);
     }
 }

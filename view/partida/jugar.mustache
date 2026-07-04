@@ -23,6 +23,12 @@
             Nivel de dificultad: <strong>{{nivel_descripcion}}</strong>
         </p>
 
+        {{#mensaje_trampita}}
+            <div class="alerta-trampita">
+                {{mensaje_trampita}}
+            </div>
+        {{/mensaje_trampita}}
+
         <h3 class="pregunta-texto" style="color: {{categoria_color}};">
             {{pregunta_enunciado}}
         </h3>
@@ -38,6 +44,15 @@
             {{/respuestas}}
 
         </form>
+        {{#trampitas}}
+            <form method="POST" action="/partida/usarTrampita" class="form-trampita">
+                <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
+
+                <button type="submit" class="btn-trampita">
+                    🃏 Usar Trampita (Tenés {{trampitas}})
+                </button>
+            </form>
+        {{/trampitas}}
 
     </section>
 

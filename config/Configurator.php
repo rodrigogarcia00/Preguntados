@@ -73,7 +73,7 @@ class Configurator {
     }
 
     public function getPartidaController() {
-        return new PartidaController($this->getRenderer(), $this->getPartidaModel(), $this->getPreguntaModel());
+        return new PartidaController($this->getRenderer(), $this->getPartidaModel(), $this->getPreguntaModel(), $this->getUsuarioModel());
     }
 
     public function getPartidaModel() {
@@ -89,6 +89,10 @@ class Configurator {
 
     public function getRankingModel() {
         return new RankingModel($this->getDatabase());
+    }
+    
+    public function getTrampitaController() {
+        return new TrampitaController($this->getUsuarioModel());
     }
 
     public function getPreguntaController() {

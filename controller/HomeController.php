@@ -28,8 +28,12 @@ class HomeController {
         $partidas = $this->partidaModel->obtenerHistorialDeUsuario($_SESSION["usuario_id"]);
 
         $mensaje_exito = null;
-        if (isset($_GET['exito']) && $_GET['exito'] == 'pregunta') {
-            $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto. ¡Gracias por colaborar!";
+        if (isset($_GET['exito'])) {
+            if ($_GET['exito'] == 'pregunta') {
+                $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto. ¡Gracias por colaborar!";
+            } else if ($_GET['exito'] == 'compra') {
+                $mensaje_exito = "¡Compra exitosa! Ya tenés tu trampita lista para usar.";
+            }
         }
 
         $this->renderer->render("verHomeView", [
