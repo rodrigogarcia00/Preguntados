@@ -185,9 +185,10 @@ class PartidaController {
 
         if ($preguntaId && $motivo) {
             $this->partidaModel->guardarReporte($preguntaId, $usuarioId, $motivo);
+            Redirect::to("/home/ver?exito=reporte");
+        } else {
+            Redirect::to("/home/ver");
         }
-
-        Redirect::to("/home/ver");
     }
     
 }

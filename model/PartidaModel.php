@@ -24,7 +24,8 @@ class PartidaModel {
                 "correcta" => false,
                 "puntaje" => $this->obtenerPuntaje($partidaId),
                 "mensaje" => "La pregunta no tiene respuesta correcta cargada.",
-                "respuesta_correcta" => "No disponible"
+                "respuesta_correcta" => "No disponible",
+                "pregunta_id" => $preguntaId
             ];
         }
 
@@ -46,7 +47,8 @@ class PartidaModel {
             "correcta" => false,
             "puntaje" => $this->obtenerPuntaje($partidaId),
             "mensaje" => "Respuesta incorrecta.",
-            "respuesta_correcta" => $respuestaCorrecta["texto"]
+            "respuesta_correcta" => $respuestaCorrecta["texto"],
+            "pregunta_id" => $preguntaId
         ];
     }
 
@@ -161,7 +163,8 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
             "correcta" => false,
             "puntaje" => $this->obtenerPuntaje($partidaId),
             "mensaje" => "Se terminó el tiempo.",
-            "respuesta_correcta" => $respuestaCorrecta["texto"]
+            "respuesta_correcta" => $respuestaCorrecta["texto"],
+            "pregunta_id" => $preguntaId
         ];
     }
 
