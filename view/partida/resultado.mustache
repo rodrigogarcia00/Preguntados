@@ -4,26 +4,37 @@
 
     <section class="partida-card resultado-card">
 
-        <h2>Perdiste la partida</h2>
+        <h2 class="resultado-titulo">¡Perdiste la partida!</h2>
 
-        <p class="resultado-mensaje">
-            {{mensaje}}
-        </p>
+        <div class="resultado-info">
+            <p class="resultado-mensaje">
+                {{mensaje}}
+            </p>
+            <p class="resultado-puntaje">
+                Puntaje obtenido: <strong>{{puntaje}}</strong>
+            </p>
 
-        <p>
-            Puntaje obtenido: <strong>{{puntaje}}</strong>
-        </p>
-
-        <p>
-            La respuesta correcta era:
-            <strong>{{respuesta_correcta}}</strong>
-        </p>
+            <div class="respuesta-correcta-box">
+                <p>La respuesta correcta era:</p>
+                <strong>{{respuesta_correcta}}</strong>
+            </div>
+        </div>
 
         <div class="resultado-acciones">
             <a href="/partida/nueva" class="btn-volver">Jugar otra vez</a>
             <a href="/home/ver" class="btn-volver">Volver al inicio</a>
         </div>
 
+        <div class="reporte-container-sutil">
+            <p class="reporte-texto">¿Notaste algún problema con la pregunta?</p>
+            <form action="/partida/reportar" method="POST" class="form-reporte-sutil">
+                <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
+                <input type="text" name="motivo" class="input-sutil" placeholder="Ej: Las opciones estaban vacías..." required>
+                <button type="submit" class="btn-reportar-sutil">Reportar</button>
+            </form>
+        </div>
     </section>
 
 </main>
+
+{{>footer}}

@@ -111,3 +111,14 @@ CREATE TABLE usuario_pregunta_vista (
 ALTER TABLE preguntas MODIFY nivel DECIMAL(3,2) NOT NULL DEFAULT 0.40;
 ALTER TABLE preguntas ADD COLUMN veces_respondida INT NOT NULL DEFAULT 0;
 ALTER TABLE preguntas ADD COLUMN veces_correcta INT NOT NULL DEFAULT 0;
+
+CREATE TABLE reportes (
+                          id INT AUTO_INCREMENT PRIMARY KEY,
+                          pregunta_id INT NOT NULL,
+                          usuario_id INT NOT NULL,
+                          motivo VARCHAR(255) NOT NULL,
+                          estado VARCHAR(20) DEFAULT 'PENDIENTE',
+                          fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+                          FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+                          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);

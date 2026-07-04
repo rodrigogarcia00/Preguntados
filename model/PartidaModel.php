@@ -174,4 +174,10 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
         $filas = $this->database->query($sql, [$usuarioId]);
         return !empty($filas) ? $filas[0] : ['puntaje_total' => 0, 'posicion' => '-'];
     }
+
+    public function guardarReporte($preguntaId, $usuarioId, $motivo) {
+        $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES ('$preguntaId', '$usuarioId', '$motivo')";
+
+        $this->database->execute($sql);
+    }
 }

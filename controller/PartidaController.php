@@ -134,5 +134,24 @@ class PartidaController {
 
         $this->mostrarPregunta($_SESSION["partida_id"]);
     }
+
+    public function reportar()
+    {
+        session_start();
+
+        if (!isset($_SESSION["usuario_id"])) {
+            Redirect::to(self::LOGIN_VER);
+        }
+
+        $preguntaId = $_POST["pregunta_id"] ?? null;
+        $motivo = $_POST["motivo"] ?? null;
+        $usuarioId = $_SESSION["usuario_id"];
+
+        if ($preguntaId && $motivo) {
+            $this->partidaModel->guardarReporte($preguntaId, $usuarioId, $motivo);
+        }
+
+        Redirect::to("/home/ver");
+    }
     
 }
