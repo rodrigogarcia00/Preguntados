@@ -33,6 +33,8 @@ class HomeController {
                 $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto. ¡Gracias por colaborar!";
             } else if ($_GET['exito'] == 'compra') {
                 $mensaje_exito = "¡Compra exitosa! Ya tenés tu trampita lista para usar.";
+            } else if ($_GET['exito'] == 'reporte') {
+                $mensaje_exito = "¡Gracias por tu reporte! Revisaremos la pregunta a la brevedad.";
             }
         }
 
