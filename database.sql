@@ -149,3 +149,20 @@ CREATE TABLE reportes (
     FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+CREATE TABLE respuestas_usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    partida_id INT NOT NULL,
+    pregunta_id INT NOT NULL,
+    respuesta_id INT NULL,
+    correcta TINYINT(1) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_respuesta_usuario_partida_pregunta (partida_id, pregunta_id),
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (partida_id) REFERENCES partidas(id),
+    FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+    FOREIGN KEY (respuesta_id) REFERENCES respuestas(id)
+);
