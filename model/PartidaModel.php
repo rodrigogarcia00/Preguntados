@@ -72,11 +72,16 @@ class PartidaModel {
 
         return array_map(function($partida) {
             return [
-                "id"       => $partida["id"],
-                "puntaje"  => $partida["puntaje"],
-                "fecha"    => date("d/m/Y", strtotime($partida["fecha_inicio"])),
-                "finalizada" => $partida["estado"] === "FINALIZADA",
-                "en_curso" => $partida["estado"] === "ACTIVA",
+                "id"               => $partida["id"],
+                "puntaje"          => $partida["puntaje"],
+                "fecha"            => date("d/m/Y", strtotime($partida["fecha_inicio"])),
+                "finalizada"       => $partida["estado"] === "FINALIZADA",
+                "en_curso"         => $partida["estado"] === "ACTIVA",
+                "solo"             => true,
+                "vs_jugador"       => false,
+                "rival"            => "",
+                "categoria_clase"  => "",
+                "categoria_nombre" => "",
             ];
         }, $filas);
     }
@@ -93,34 +98,32 @@ class PartidaModel {
     }
 
     private function finalizar($partidaId) {
-    $partida = $this->buscarPorId($partidaId);
+        $partida = $this->buscarPorId($partidaId);
 
-    if (!$partida || $partida["estado"] !== "ACTIVA") {
-        return;
+        if (!$partida || $partida["estado"] !== "ACTIVA") {
+            return;
+        }
+
+        $sql = "UPDATE partidas
+                SET estado = 'FINALIZADA',
+                    fecha_fin = NOW()
+                WHERE id = ?
+                AND estado = 'ACTIVA'";
+
+        $filasAfectadas = $this->database->execute($sql, [$partidaId]);
+
+        if ($filasAfectadas > 0) {
+            $this->sumarPuntajeTotalUsuario(
+                $partida["usuario_id"],
+                $partida["puntaje"]
+            );
+        }
     }
 
-    $sql = "UPDATE partidas
-            SET estado = 'FINALIZADA',
-                fecha_fin = NOW()
-            WHERE id = ?
-            AND estado = 'ACTIVA'";
-
-    $filasAfectadas = $this->database->execute($sql, [$partidaId]);
-
-    if ($filasAfectadas > 0) {
-        $this->sumarPuntajeTotalUsuario(
-            $partida["usuario_id"],
-            $partida["puntaje"]
-        );
+    private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
+        $sql = "UPDATE usuarios SET puntaje_total = puntaje_total + ? WHERE id = ?";
+        $this->database->execute($sql, [$puntaje, $usuarioId]);
     }
-}
-private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
-    $sql = "UPDATE usuarios
-            SET puntaje_total = puntaje_total + ?
-            WHERE id = ?";
-
-    $this->database->execute($sql, [$puntaje, $usuarioId]);
-}
 
     public function obtenerPreguntaActualONueva($partidaId) {
         $partida = $this->buscarPorId($partidaId);
@@ -129,11 +132,8 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
         }
 
         $usuarioId = $partida["usuario_id"];
-
         $pregunta = $this->preguntaModel->obtenerPreguntaParaUsuario($usuarioId);
-
         $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
-
         $this->preguntaModel->guardarPreguntaVista($usuarioId, $pregunta["id"]);
 
         return $this->preguntaModel->obtenerPorIdConRespuestas($pregunta["id"]);
