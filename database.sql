@@ -116,3 +116,58 @@ ADD COLUMN rol VARCHAR(20) DEFAULT 'JUGADOR';
 ALTER TABLE preguntas
 ADD COLUMN fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN creada_por_usuario_id INT NULL;
+
+ALTER TABLE usuarios ADD COLUMN trampitas INT DEFAULT 0;
+
+CREATE TABLE compras_trampitas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_total DECIMAL(10,2) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE preguntas_sugeridas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    categoria_id INT NOT NULL,
+    pregunta VARCHAR(255) NOT NULL,
+    opcion_a VARCHAR(255) NOT NULL,
+    opcion_b VARCHAR(255) NOT NULL,
+    opcion_c VARCHAR(255) NOT NULL,
+    opcion_d VARCHAR(255) NOT NULL,
+    respuesta_correcta VARCHAR(1) NOT NULL,
+    estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+CREATE TABLE reportes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pregunta_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    motivo VARCHAR(255) NOT NULL,
+    estado VARCHAR(20) DEFAULT 'PENDIENTE',
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE respuestas_usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
+    partida_id INT NOT NULL,
+    pregunta_id INT NOT NULL,
+    respuesta_id INT NULL,
+    correcta TINYINT(1) NOT NULL,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_respuesta_usuario_partida_pregunta (partida_id, pregunta_id),
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (partida_id) REFERENCES partidas(id),
+    FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
+    FOREIGN KEY (respuesta_id) REFERENCES respuestas(id)
+);

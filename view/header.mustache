@@ -8,6 +8,7 @@
           rel="stylesheet">
     <link rel="stylesheet" href="/public/css/home.css">
     <link rel="stylesheet" href="/public/css/partida.css">
+    <link rel="stylesheet" href="/public/css/sugerir.css">
 </head>
 <body>
 
@@ -16,7 +17,9 @@
         <img src="/public/img/logo.png" alt="Logo de Preguntados" class="logo">
         <p>{{nombre}} — {{puntaje}} puntos</p>
         <div>
-            <a href="/usuario/perfil">Mi perfil</a>
+            {{^ocultar_perfil}}
+                <a href="/usuario/perfil">Mi perfil</a>
+            {{/ocultar_perfil}}
             <a href="/login/logout">Cerrar sesión</a>
         </div>
     </nav>

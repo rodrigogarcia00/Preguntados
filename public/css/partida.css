@@ -99,3 +99,252 @@
     min-width: 70px;
     text-align: center;
 }
+
+.alerta-trampita {
+    background-color: #e8f8f5;
+    border: 1px solid #1abc9c;
+    color: #16a085;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+    /* Animación para que aparezca suavemente */
+    animation: aparecer 0.4s ease-out;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.resultado-titulo {
+    color: #e74c3c;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.resultado-info {
+    margin-bottom: 30px;
+}
+
+.resultado-mensaje {
+    font-size: 18px;
+    color: #555;
+}
+
+.resultado-puntaje span {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.respuesta-correcta-box {
+    background-color: #e8f8f5;
+    border: 1px solid #1abc9c;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 400px;
+    color: #16a085;
+}
+
+.respuesta-correcta-box p {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+.respuesta-correcta-box strong {
+    font-size: 18px;
+}
+
+.resultado-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.btn-primario {
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: #8a2be2;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-primario:hover {
+    background-color: #6a1b9a;
+}
+
+.btn-secundario {
+    padding: 12px 24px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-secundario:hover {
+    background-color: #e0e0e0;
+}
+
+.reporte-container-sutil {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.reporte-texto {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.form-reporte-sutil {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.input-sutil {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+}
+
+.input-sutil:focus {
+    border-color: #aaa;
+}
+
+.btn-reportar-sutil {
+    background-color: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-reportar-sutil:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.form-trampita {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.btn-trampita {
+    background-color: #f39c12; /* Un naranja/dorado para destacarlo */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.btn-trampita:hover {
+    background-color: #d68910;
+}
+
+.sugerir-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.sugerir-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    text-align: center;
+}
+
+.sugerir-card h2 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 26px;
+}
+
+.sugerir-card p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.form-sugerir {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.form-sugerir label {
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+    margin-bottom: -10px;
+}
+
+.form-sugerir input,
+.form-sugerir select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-sugerir input:focus,
+.form-sugerir select:focus {
+    border-color: #8a2be2;
+}
+
+.form-sugerir .btn-primario {
+    margin-top: 20px;
+    background-color: #8a2be2;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.form-sugerir .btn-primario:hover {
+    background-color: #6a1b9a;
+}

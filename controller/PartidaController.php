@@ -7,11 +7,13 @@ class PartidaController {
     private $partidaModel;
     private $preguntaModel;
     private const TIEMPO_LIMITE_PREGUNTA = 30;
+    private $usuarioModel;
 
-    public function __construct($renderer, $partidaModel, $preguntaModel) {
+    public function __construct($renderer, $partidaModel, $preguntaModel, $usuarioModel) {
         $this->renderer = $renderer;
         $this->partidaModel = $partidaModel;
         $this->preguntaModel = $preguntaModel;
+        $this->usuarioModel = $usuarioModel;
     }
 
     public function nueva() {
@@ -76,6 +78,10 @@ class PartidaController {
         $preguntaId = $pregunta["id"];
         $tiempoRestante = $this->calcularTiempoRestante($preguntaId);
 
+        // Atrapamos el mensaje de la trampita si es que viene de usar una
+        $mensajeTrampita = $_SESSION['mensaje_trampita'] ?? null;
+        unset($_SESSION['mensaje_trampita']); // Lo borramos para que no aparezca en la siguiente pregunta
+
         $this->renderer->render("partida/jugar", [
             "pregunta_id" => $pregunta["id"],
             "pregunta_enunciado" => $pregunta["enunciado"],
@@ -84,7 +90,9 @@ class PartidaController {
             "respuestas" => $pregunta["respuestas"],
             "puntaje" => $puntaje,
             "nivel_descripcion" => $pregunta["nivel_descripcion"],
-            "tiempo_limite" => $tiempoRestante
+            "tiempo_limite" => $tiempoRestante,
+            "trampitas" => $_SESSION["trampitas"] ?? 0,
+            "mensaje_trampita" => $mensajeTrampita
         ]);
     }
 
@@ -133,6 +141,54 @@ class PartidaController {
         }
 
         $this->mostrarPregunta($_SESSION["partida_id"]);
+    }
+
+    public function usarTrampita() {
+        session_start();
+        if (!isset($_SESSION["usuario_id"]) || !isset($_SESSION["partida_id"])) {
+            Redirect::to("/login");
+        }
+
+        $preguntaId = $_POST["pregunta_id"] ?? null;
+        $usuarioId = $_SESSION["usuario_id"];
+        $partidaId = $_SESSION["partida_id"];
+
+        if (isset($_SESSION["trampitas"]) && $_SESSION["trampitas"] > 0) {
+            $this->usuarioModel->descontarTrampita($usuarioId);
+            $_SESSION["trampitas"] -= 1;
+
+            $respuestaCorrecta = $this->partidaModel->obtenerRespuestaCorrecta($preguntaId);
+
+            if ($respuestaCorrecta) {
+                $this->partidaModel->responder($partidaId, $preguntaId, $respuestaCorrecta['id']);
+                $_SESSION['mensaje_trampita'] = "🃏 ¡Trampita usada! Sumaste 1 punto. La respuesta era: " . $respuestaCorrecta['texto'];
+            }
+
+            unset($_SESSION["pregunta_inicio"]);
+            unset($_SESSION["pregunta_actual_timer_id"]);
+
+            Redirect::to("/partida/jugar");
+        } else {
+            Redirect::to("/home/ver");
+        }
+    }
+
+    public function reportar() {
+        session_start();
+        if (!isset($_SESSION["usuario_id"])) {
+            Redirect::to(self::LOGIN_VER);
+        }
+
+        $preguntaId = $_POST["pregunta_id"] ?? null;
+        $motivo = $_POST["motivo"] ?? null;
+        $usuarioId = $_SESSION["usuario_id"];
+
+        if ($preguntaId && $motivo) {
+            $this->partidaModel->guardarReporte($preguntaId, $usuarioId, $motivo);
+            Redirect::to("/home/ver?exito=reporte");
+        } else {
+            Redirect::to("/home/ver");
+        }
     }
     
 }

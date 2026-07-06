@@ -27,6 +27,17 @@ class HomeController {
 
         $partidas = $this->partidaModel->obtenerHistorialDeUsuario($_SESSION["usuario_id"]);
 
+        $mensaje_exito = null;
+        if (isset($_GET['exito'])) {
+            if ($_GET['exito'] == 'pregunta') {
+                $mensaje_exito = "¡Sugerencia enviada! Un editor la revisará pronto. ¡Gracias por colaborar!";
+            } else if ($_GET['exito'] == 'compra') {
+                $mensaje_exito = "¡Compra exitosa! Ya tenés tu trampita lista para usar.";
+            } else if ($_GET['exito'] == 'reporte') {
+                $mensaje_exito = "¡Gracias por tu reporte! Revisaremos la pregunta a la brevedad.";
+            }
+        }
+
         $this->renderer->render("verHomeView", [
             "nombre"              => $_SESSION["usuario_nombre"],
             "puntaje"             => $puntaje,
@@ -39,6 +50,8 @@ class HomeController {
 
             "partidas_pendientes" => false,
             "pendientes"          => [],
+
+            "mensaje_exito"       => $mensaje_exito
         ]);
     }
 }

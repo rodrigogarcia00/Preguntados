@@ -1,0 +1,77 @@
+/* --- ESTILOS PARA SUGERIR PREGUNTA --- */
+.sugerir-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.sugerir-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    text-align: center;
+}
+
+.sugerir-card h2 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 26px;
+}
+
+.sugerir-card p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.form-sugerir {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.form-sugerir label {
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+    margin-bottom: -10px;
+}
+
+.form-sugerir input,
+.form-sugerir select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.form-sugerir input:focus,
+.form-sugerir select:focus {
+    border-color: #8a2be2;
+}
+
+/* El botón principal de sugerir */
+.form-sugerir .btn-primario {
+    margin-top: 20px;
+    background-color: #8a2be2;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+.form-sugerir .btn-primario:hover {
+    background-color: #6a1b9a;
+}

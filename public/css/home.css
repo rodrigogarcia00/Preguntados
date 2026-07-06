@@ -732,6 +732,32 @@ footer, .footer {
     }
 }
 
+.alerta-exito {
+    background-color: rgba(62, 207, 142, 0.15);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    text-align: center;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    /* Animación para que aparezca suave y desaparezca a los 5 segundos */
+    animation: aparecerDesaparecer 5s ease-in-out forwards;
+}
+
+@keyframes aparecerDesaparecer {
+    0% { opacity: 0; transform: translateY(-15px); }
+    10% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
 @media (max-width: 700px) {
     .ranking-table-header {
         display: none;
