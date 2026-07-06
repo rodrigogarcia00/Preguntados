@@ -1,0 +1,163 @@
+{{>header}}
+
+<main class="admin-container">
+
+    <section class="admin-header no-print">
+        <h1>📊 Panel administrador</h1>
+        <p>Reportes generales de la aplicación</p>
+
+        <form method="GET" action="/admin/reportes" class="admin-filtros">
+            <select name="periodo">
+                <option value="dia" {{#filtro_dia}}selected{{/filtro_dia}}>Día</option>
+                <option value="semana" {{#filtro_semana}}selected{{/filtro_semana}}>Semana</option>
+                <option value="mes" {{#filtro_mes}}selected{{/filtro_mes}}>Mes</option>
+                <option value="anio" {{#filtro_anio}}selected{{/filtro_anio}}>Año</option>
+            </select>
+
+            <button type="submit">Filtrar</button>
+            <button type="button" onclick="window.print()">Imprimir tablas</button>
+        </form>
+    </section>
+
+    <section class="admin-cards">
+        <div class="admin-card">
+            <span>Jugadores</span>
+            <strong>{{cantidad_jugadores}}</strong>
+        </div>
+
+        <div class="admin-card">
+            <span>Usuarios nuevos</span>
+            <strong>{{usuarios_nuevos}}</strong>
+        </div>
+
+        <div class="admin-card">
+            <span>Partidas jugadas</span>
+            <strong>{{partidas_jugadas}}</strong>
+        </div>
+
+        <div class="admin-card">
+            <span>Preguntas en juego</span>
+            <strong>{{preguntas_en_juego}}</strong>
+        </div>
+
+        <div class="admin-card">
+            <span>Preguntas creadas</span>
+            <strong>{{preguntas_creadas}}</strong>
+        </div>
+    </section>
+
+    <section class="admin-section">
+        <h2>Porcentaje de respuestas correctas por usuario</h2>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Respondidas</th>
+                <th>Correctas</th>
+                <th>Porcentaje</th>
+                <th>Gráfico</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#correctas_por_usuario}}
+                <tr>
+                    <td>{{username}}</td>
+                    <td>{{respondidas}}</td>
+                    <td>{{correctas}}</td>
+                    <td>{{porcentaje}}%</td>
+                    <td>
+                        <div class="admin-bar">
+                            <div class="admin-bar-fill" style="width: {{barra}}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            {{/correctas_por_usuario}}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="admin-section">
+        <h2>Usuarios por país</h2>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>País</th>
+                <th>Cantidad</th>
+                <th>Gráfico</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#usuarios_por_pais}}
+                <tr>
+                    <td>{{pais}}</td>
+                    <td>{{cantidad}}</td>
+                    <td>
+                        <div class="admin-bar">
+                            <div class="admin-bar-fill" style="width: {{barra}}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            {{/usuarios_por_pais}}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="admin-section">
+        <h2>Usuarios por sexo</h2>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Sexo</th>
+                <th>Cantidad</th>
+                <th>Gráfico</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#usuarios_por_sexo}}
+                <tr>
+                    <td>{{sexo}}</td>
+                    <td>{{cantidad}}</td>
+                    <td>
+                        <div class="admin-bar">
+                            <div class="admin-bar-fill" style="width: {{barra}}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            {{/usuarios_por_sexo}}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="admin-section">
+        <h2>Usuarios por grupo de edad</h2>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Grupo</th>
+                <th>Cantidad</th>
+                <th>Gráfico</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#usuarios_por_grupo_edad}}
+                <tr>
+                    <td>{{grupo_edad}}</td>
+                    <td>{{cantidad}}</td>
+                    <td>
+                        <div class="admin-bar">
+                            <div class="admin-bar-fill" style="width: {{barra}}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            {{/usuarios_por_grupo_edad}}
+            </tbody>
+        </table>
+    </section>
+
+</main>
+
+{{>footer}}

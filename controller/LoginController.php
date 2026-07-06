@@ -117,44 +117,50 @@ class LoginController{
     }
 
     public function validar() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        $username = $this->request->post("username");
-        $password = $this->request->post("password");
-
-        if (empty($username) || empty($password)) {
-            $_SESSION["error"] = "Complete todos los campos.";
-            Redirect::to(self::LOGIN_VIEW);
-            return;
-        }
-
-        $usuario = $this->usuarioModel->getByUsername($username);
-
-        if ($usuario["activo"] == 0) {
-            session_start();
-            $_SESSION["error"] = "Debés activar tu cuenta desde el correo electrónico.";
-            Redirect::to("/login/ver");
-            return;
-        }
-
-        if ($usuario === null || !password_verify($password, $usuario["password"])) {
-            $_SESSION["error"] = "Usuario o contraseña incorrectos.";
-            Log::warning("LoginController::validar - credenciales incorrectas: $username");
-            Redirect::to(self::LOGIN_VIEW);
-            return;
-        }
-
-        $_SESSION["usuario_id"]     = $usuario["id"];
-        $_SESSION["usuario_nombre"] = $usuario["nombre"];
-        $_SESSION["username"]       = $usuario["username"];
-        $_SESSION["puntaje"]        = $usuario["puntaje_total"] ?? 0;
-        $_SESSION["trampitas"]      = $usuario["trampitas"] ?? 0;
-
-        Log::info("LoginController::validar - login exitoso: $username");
-        Redirect::to("/home/ver");
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    $username = $this->request->post("username");
+    $password = $this->request->post("password");
+
+    if (empty($username) || empty($password)) {
+        $_SESSION["error"] = "Complete todos los campos.";
+        Redirect::to(self::LOGIN_VIEW);
+        return;
+    }
+
+    $usuario = $this->usuarioModel->getByUsername($username);
+
+    if ($usuario === null || !password_verify($password, $usuario["password"])) {
+        $_SESSION["error"] = "Usuario o contraseña incorrectos.";
+        Log::warning("LoginController::validar - credenciales incorrectas: $username");
+        Redirect::to(self::LOGIN_VIEW);
+        return;
+    }
+
+    if ($usuario["activo"] == 0) {
+        $_SESSION["error"] = "Debés activar tu cuenta desde el correo electrónico.";
+        Redirect::to("/login/ver");
+        return;
+    }
+
+    $_SESSION["usuario_id"]     = $usuario["id"];
+    $_SESSION["usuario_nombre"] = $usuario["nombre"];
+    $_SESSION["username"]       = $usuario["username"];
+    $_SESSION["puntaje"]        = $usuario["puntaje_total"] ?? 0;
+    $_SESSION["trampitas"]      = $usuario["trampitas"] ?? 0;
+    $_SESSION["usuario_rol"]    = $usuario["rol"] ?? "JUGADOR";
+
+    Log::info("LoginController::validar - login exitoso: $username");
+
+if ($_SESSION["usuario_rol"] === "ADMIN") {
+    Redirect::to("/admin/reportes");
+    return;
+}
+
+Redirect::to("/home/ver");
+}
 
     public function logout() {
         if (session_status() === PHP_SESSION_NONE) {
