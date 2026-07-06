@@ -72,6 +72,23 @@ class PreguntaModel {
     }
 
     public function obtenerPreguntaParaUsuario($usuarioId) {
+        $estadisticas = $this->obtenerEstadisticasUsuario($usuarioId);
+
+        $totalRespondidas = $estadisticas["total"];
+        $correctas = $estadisticas["correctas"];
+
+        if ($totalRespondidas >= 10) {
+            $ratioCorrectas = round($correctas / $totalRespondidas, 2);
+
+            $pregunta = $this->obtenerPreguntaNoVistaMasCercanaAlNivel($usuarioId, $ratioCorrectas);
+
+            if ($pregunta != null) {
+                return $pregunta;
+            }
+
+            return $this->obtenerPreguntaMasCercanaAlNivel($ratioCorrectas);
+        }
+
         $pregunta = $this->obtenerPreguntaNoVista($usuarioId);
 
         if ($pregunta != null) {
@@ -188,6 +205,43 @@ class PreguntaModel {
     public function getCategorias() {
         $sql = "SELECT * FROM categorias";
         return $this->database->query($sql);
+    }
+
+    private function obtenerEstadisticasUsuario($usuarioId) {
+        $sql = "SELECT COUNT(*) AS total, SUM(correcta) AS correctas
+                FROM respuestas_usuario
+                WHERE usuario_id = ?";
+
+        Log::info("PreguntaModel::obtenerEstadisticasUsuario usuarioId: $usuarioId");
+        $filas = $this->database->query($sql, [$usuarioId]);
+        return !empty($filas) ? $filas[0] : ["total" => 0, "correctas" => 0];
+    }
+
+    private function obtenerPreguntaNoVistaMasCercanaAlNivel($usuarioId, $nivelObjetivo) {
+        $sql = "SELECT p.*
+                FROM preguntas p
+                WHERE p.id NOT IN (
+                    SELECT pregunta_id
+                    FROM usuario_pregunta_vista
+                    WHERE usuario_id = ?
+                )
+                ORDER BY ABS(p.nivel - ?), RAND()
+                LIMIT 1";
+
+        Log::info("PreguntaModel::obtenerPreguntaNoVistaMasCercanaAlNivel usuarioId: $usuarioId, nivelObjetivo: $nivelObjetivo");
+        $filas = $this->database->query($sql, [$usuarioId, $nivelObjetivo]);
+        return !empty($filas) ? $filas[0] : null;
+    }
+
+    private function obtenerPreguntaMasCercanaAlNivel($nivelObjetivo) {
+        $sql = "SELECT p.*
+                FROM preguntas p
+                ORDER BY ABS(p.nivel - ?), RAND()
+                LIMIT 1";
+        
+        Log::info("PreguntaModel::obtenerPreguntaMasCercanaAlNivel nivelObjetivo: $nivelObjetivo");
+        $filas = $this->database->query($sql, [$nivelObjetivo]);
+        return !empty($filas) ? $filas[0] : null;
     }
 
 }

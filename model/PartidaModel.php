@@ -31,6 +31,9 @@ class PartidaModel {
 
         $respondioCorrectamente = $respuestaId == $respuestaCorrecta["id"];
 
+        $partida = $this->buscarPorId($partidaId);
+        $this->registrarRespuestaUsuario($partida["usuario_id"], $partidaId, $preguntaId, $respuestaId, $respondioCorrectamente);
+
         $this->preguntaModel->actualizarNivel($preguntaId, $respondioCorrectamente);
 
         if ($respondioCorrectamente) {
@@ -155,6 +158,9 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
     public function responderFueraDeTiempo($partidaId, $preguntaId) {
         $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
 
+        $partida = $this->buscarPorId($partidaId);
+        $this->registrarRespuestaUsuario($partida["usuario_id"], $partidaId, $preguntaId, null, false);
+
         $this->preguntaModel->actualizarNivel($preguntaId, false);
 
         $this->finalizar($partidaId);
@@ -187,5 +193,11 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
     public function guardarReporte($preguntaId, $usuarioId, $motivo) {
         $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES ('$preguntaId', '$usuarioId', '$motivo')";
         $this->database->execute($sql);
+    }
+
+    private function registrarRespuestaUsuario($usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta) {
+        $sql = "INSERT INTO respuestas_usuario (usuario_id, partida_id, pregunta_id, respuesta_id, correcta) VALUES (?, ?, ?, ?, ?)";
+        Log::info("SQL: $sql [$usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta]");
+        $this->database->execute($sql, [$usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta ? 1 : 0]);
     }
 }
