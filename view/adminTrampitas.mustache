@@ -1,0 +1,73 @@
+{{>header}}
+
+<main class="lobby-container">
+
+    <section class="welcome-panel">
+        <div class="welcome-left">
+            <div class="welcome-info">
+                <p class="welcome-label">Panel de Administración</p>
+                <h1 class="welcome-name">💰 Trampitas</h1>
+            </div>
+        </div>
+        <a href="/admin/reportes" class="btn-volver">← Volver a reportes</a>
+    </section>
+
+    <!-- RESUMEN GENERAL -->
+    <section class="history-section">
+        <h2 class="section-title">📊 Resumen general</h2>
+        <div class="main-actions">
+            <div class="action-card">
+                <span class="action-icon">🛒</span>
+                <span class="action-title">{{total_ventas}}</span>
+                <span class="action-desc">Ventas realizadas</span>
+            </div>
+            <div class="action-card">
+                <span class="action-icon">🃏</span>
+                <span class="action-title">{{total_trampitas_vendidas}}</span>
+                <span class="action-desc">Trampitas vendidas</span>
+            </div>
+            <div class="action-card action-ranking">
+                <span class="action-icon">💵</span>
+                <span class="action-title">${{total_dinero}}</span>
+                <span class="action-desc">Dinero total ganado</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- BALANCE POR USUARIO -->
+    <section class="history-section">
+        <h2 class="section-title">👥 Balance por usuario</h2>
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Trampitas actuales</th>
+                    <th>Total compradas</th>
+                    <th>Total gastado</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#balance_por_usuario}}
+                    <tr>
+                        <td>{{username}}</td>
+                        <td>{{nombre}}</td>
+                        <td class="td-puntaje">{{trampitas}}</td>
+                        <td>{{total_compradas}}</td>
+                        <td class="td-puntaje">${{total_gastado}}</td>
+                    </tr>
+                {{/balance_por_usuario}}
+                {{^balance_por_usuario}}
+                    <tr>
+                        <td colspan="5" style="text-align:center; color: var(--text-muted);">No hay compras registradas todavía</td>
+                    </tr>
+                {{/balance_por_usuario}}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+{{>footer}}
