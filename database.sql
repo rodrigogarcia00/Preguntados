@@ -117,7 +117,7 @@ ALTER TABLE usuarios ADD COLUMN rol VARCHAR(20) DEFAULT 'JUGADOR';
 
 ALTER TABLE preguntas
     ADD COLUMN fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN creada_por_usuario_id INT NULL;
+    ADD COLUMN creada_por_usuario_id INT NULL;
 
 CREATE TABLE compras_trampitas (
                                    id INT AUTO_INCREMENT PRIMARY KEY,

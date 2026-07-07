@@ -17,7 +17,9 @@
         <img src="/public/img/logo.png" alt="Logo de Preguntados" class="logo">
         <p>{{nombre}} — {{puntaje}} puntos</p>
         <div>
-            <a href="/usuario/perfil">Mi perfil</a>
+            {{^ocultar_perfil}}
+                <a href="/usuario/perfil">Mi perfil</a>
+            {{/ocultar_perfil}}
             <a href="/login/logout">Cerrar sesión</a>
         </div>
     </nav>

@@ -59,27 +59,27 @@ class AdminModel
     }
 
     public function getCorrectasPorUsuario($periodo)
-    {
-        [$desde, $hasta] = $this->getRangoFechas($periodo);
+{
+    [$desde, $hasta] = $this->getRangoFechas($periodo);
 
-        $sql = "SELECT 
-                    u.id,
-                    u.nombre,
-                    u.username,
-                    COUNT(rp.id) AS respondidas,
-                    SUM(CASE WHEN rp.correcta = 1 THEN 1 ELSE 0 END) AS correctas,
-                    ROUND(
-                        SUM(CASE WHEN rp.correcta = 1 THEN 1 ELSE 0 END) * 100 / COUNT(rp.id),
-                        2
-                    ) AS porcentaje
-                FROM respuestas_partida rp
-                INNER JOIN usuarios u ON u.id = rp.usuario_id
-                WHERE rp.fecha_respuesta BETWEEN ? AND ?
-                GROUP BY u.id, u.nombre, u.username
-                ORDER BY porcentaje DESC";
+    $sql = "SELECT 
+                u.id,
+                u.nombre,
+                u.username,
+                COUNT(ru.id) AS respondidas,
+                SUM(CASE WHEN ru.correcta = 1 THEN 1 ELSE 0 END) AS correctas,
+                ROUND(
+                    SUM(CASE WHEN ru.correcta = 1 THEN 1 ELSE 0 END) * 100 / COUNT(ru.id),
+                    2
+                ) AS porcentaje
+            FROM respuestas_usuario ru
+            INNER JOIN usuarios u ON u.id = ru.usuario_id
+            WHERE ru.fecha BETWEEN ? AND ?
+            GROUP BY u.id, u.nombre, u.username
+            ORDER BY porcentaje DESC";
 
-        return $this->database->query($sql, [$desde, $hasta]);
-    }
+    return $this->database->query($sql, [$desde, $hasta]);
+}
 
     public function getUsuariosPorPais($periodo)
     {

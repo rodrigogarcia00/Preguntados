@@ -93,7 +93,7 @@ class Configurator {
     }
 
     public function getTrampitaController() {
-        return new TrampitaController($this->getUsuarioModel());
+        return new TrampitaController($this->getUsuarioModel(), $this->getRenderer());
     }
 
     public function getPreguntaController() {
