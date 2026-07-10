@@ -8,10 +8,6 @@ class TrampitaController {
     }
 
     public function comprar() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login");
-        }
 
         $usuarioId = $_SESSION["usuario_id"];
         $cantidad = 1;

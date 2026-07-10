@@ -8,7 +8,6 @@ class LandingController {
     }
 
     public function ver(){
-        session_start();
         $logueado = isset($_SESSION["usuario_id"]);
 
         $this->renderer->render("verLandingView", [

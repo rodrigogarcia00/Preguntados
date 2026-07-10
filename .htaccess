@@ -46,6 +46,8 @@ Options -Indexes
     #   /vikingo/editar?id=5 llega como controller=vikingo&method=editar&id=5
     RewriteRule ^([^/]+)/([^/]+)$ index.php?controller=$1&method=$2 [L,QSA]
 
+    RewriteRule ^(public)($|/) - [L,NC]
+
     # ── REGLA 2: /controller (sin method) ────────────────
     # Si solo viene el controller, el router usa el método default ('ver').
     RewriteRule ^([^/]+)$         index.php?controller=$1           [L,QSA]

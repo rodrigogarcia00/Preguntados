@@ -10,14 +10,6 @@ class HomeController {
     }
 
     public function ver() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            return;
-        }
-
         Log::info("HomeController::ver - usuario: " . $_SESSION["username"]);
 
         $estadisticas = $this->partidaModel->obtenerEstadisticasLobby($_SESSION["usuario_id"]);

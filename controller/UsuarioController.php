@@ -41,21 +41,10 @@ class UsuarioController
     }
 
     public function perfil() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            return;
-        }
         Redirect::to("/usuario/verPerfil?id=" . $_SESSION["usuario_id"]);
     }
 
     public function verPerfil() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            return;
-        }
-
         $id = $this->request->get("id");
 
         if (!is_numeric($id)) {
