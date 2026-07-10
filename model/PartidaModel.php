@@ -19,6 +19,7 @@ class PartidaModel {
         $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
 
         if ($respuestaCorrecta === null) {
+            $this->registrarRespuesta($partidaId, $preguntaId, $respuestaId, false);
             $this->finalizar($partidaId);
             return [
                 "correcta" => false,
@@ -31,8 +32,7 @@ class PartidaModel {
 
         $respondioCorrectamente = $respuestaId == $respuestaCorrecta["id"];
 
-        $partida = $this->buscarPorId($partidaId);
-        $this->registrarRespuestaUsuario($partida["usuario_id"], $partidaId, $preguntaId, $respuestaId, $respondioCorrectamente);
+        $this->registrarRespuesta($partidaId, $preguntaId, $respuestaId, $respondioCorrectamente);
 
         $this->preguntaModel->actualizarNivel($preguntaId, $respondioCorrectamente);
 
@@ -72,11 +72,16 @@ class PartidaModel {
 
         return array_map(function($partida) {
             return [
-                "id"       => $partida["id"],
-                "puntaje"  => $partida["puntaje"],
-                "fecha"    => date("d/m/Y", strtotime($partida["fecha_inicio"])),
-                "finalizada" => $partida["estado"] === "FINALIZADA",
-                "en_curso" => $partida["estado"] === "ACTIVA",
+                "id"               => $partida["id"],
+                "puntaje"          => $partida["puntaje"],
+                "fecha"            => date("d/m/Y", strtotime($partida["fecha_inicio"])),
+                "finalizada"       => $partida["estado"] === "FINALIZADA",
+                "en_curso"         => $partida["estado"] === "ACTIVA",
+                "solo"             => true,
+                "vs_jugador"       => false,
+                "rival"            => "",
+                "categoria_clase"  => "",
+                "categoria_nombre" => "",
             ];
         }, $filas);
     }
@@ -87,62 +92,61 @@ class PartidaModel {
         return !empty($filas) ? $filas[0] : null;
     }
 
+    private function registrarRespuesta($partidaId, $preguntaId, $respuestaId, $correcta) {
+        $partida = $this->buscarPorId($partidaId);
+        if (!$partida) {
+            return;
+        }
+        $sql = "INSERT INTO respuestas_usuario (usuario_id, partida_id, pregunta_id, respuesta_id, correcta)
+                VALUES (?, ?, ?, ?, ?)";
+        Log::info("registrarRespuesta: partidaId=$partidaId preguntaId=$preguntaId");
+        $this->database->execute($sql, [
+            $partida["usuario_id"],
+            $partidaId,
+            $preguntaId,
+            $respuestaId,
+            $correcta ? 1 : 0
+        ]);
+    }
+
     private function sumarPunto($partidaId) {
         $sql = "UPDATE partidas SET puntaje = puntaje + 1 WHERE id = ? AND estado = 'ACTIVA'";
         $this->database->execute($sql, [$partidaId]);
     }
 
     private function finalizar($partidaId) {
-    $partida = $this->buscarPorId($partidaId);
-
-    if (!$partida || $partida["estado"] !== "ACTIVA") {
-        return;
+        $partida = $this->buscarPorId($partidaId);
+        if (!$partida || $partida["estado"] !== "ACTIVA") {
+            return;
+        }
+        $sql = "UPDATE partidas SET estado = 'FINALIZADA', fecha_fin = NOW() WHERE id = ? AND estado = 'ACTIVA'";
+        $filasAfectadas = $this->database->execute($sql, [$partidaId]);
+        if ($filasAfectadas > 0) {
+            $this->sumarPuntajeTotalUsuario($partida["usuario_id"], $partida["puntaje"]);
+        }
     }
 
-    $sql = "UPDATE partidas
-            SET estado = 'FINALIZADA',
-                fecha_fin = NOW()
-            WHERE id = ?
-            AND estado = 'ACTIVA'";
-
-    $filasAfectadas = $this->database->execute($sql, [$partidaId]);
-
-    if ($filasAfectadas > 0) {
-        $this->sumarPuntajeTotalUsuario(
-            $partida["usuario_id"],
-            $partida["puntaje"]
-        );
+    private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
+        $sql = "UPDATE usuarios SET puntaje_total = puntaje_total + ? WHERE id = ?";
+        $this->database->execute($sql, [$puntaje, $usuarioId]);
     }
-}
-private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
-    $sql = "UPDATE usuarios
-            SET puntaje_total = puntaje_total + ?
-            WHERE id = ?";
-
-    $this->database->execute($sql, [$puntaje, $usuarioId]);
-}
 
     public function obtenerPreguntaActualONueva($partidaId) {
         $partida = $this->buscarPorId($partidaId);
         if ($partida["pregunta_actual_id"] !== null) {
             return $this->preguntaModel->obtenerPorIdConRespuestas($partida["pregunta_actual_id"]);
         }
-
         $usuarioId = $partida["usuario_id"];
-
         $pregunta = $this->preguntaModel->obtenerPreguntaParaUsuario($usuarioId);
-
         $this->asignarPreguntaActual($partidaId, $pregunta["id"]);
-
         $this->preguntaModel->guardarPreguntaVista($usuarioId, $pregunta["id"]);
-
         return $this->preguntaModel->obtenerPorIdConRespuestas($pregunta["id"]);
     }
 
     private function buscarPorId($partidaId) {
         $sql = "SELECT * FROM partidas WHERE id = ?";
         $filas = $this->database->query($sql, [$partidaId]);
-        return $filas[0];
+        return !empty($filas) ? $filas[0] : null;
     }
 
     private function asignarPreguntaActual($partidaId, $preguntaId) {
@@ -157,19 +161,14 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
 
     public function responderFueraDeTiempo($partidaId, $preguntaId) {
         $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
-
-        $partida = $this->buscarPorId($partidaId);
-        $this->registrarRespuestaUsuario($partida["usuario_id"], $partidaId, $preguntaId, null, false);
-
+        $this->registrarRespuesta($partidaId, $preguntaId, null, false);
         $this->preguntaModel->actualizarNivel($preguntaId, false);
-
         $this->finalizar($partidaId);
-
         return [
             "correcta" => false,
             "puntaje" => $this->obtenerPuntaje($partidaId),
             "mensaje" => "Se terminó el tiempo.",
-            "respuesta_correcta" => $respuestaCorrecta["texto"],
+            "respuesta_correcta" => $respuestaCorrecta ? $respuestaCorrecta["texto"] : "No disponible",
             "pregunta_id" => $preguntaId
         ];
     }
@@ -179,7 +178,6 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
                    (SELECT COUNT(*) + 1 FROM usuarios WHERE puntaje_total > u.puntaje_total AND activo = 1) as posicion
             FROM usuarios u 
             WHERE id = ?";
-
         $filas = $this->database->query($sql, [$usuarioId]);
         return !empty($filas) ? $filas[0] : ['puntaje_total' => 0, 'posicion' => '-'];
     }
@@ -193,11 +191,5 @@ private function sumarPuntajeTotalUsuario($usuarioId, $puntaje) {
     public function guardarReporte($preguntaId, $usuarioId, $motivo) {
         $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES ('$preguntaId', '$usuarioId', '$motivo')";
         $this->database->execute($sql);
-    }
-
-    private function registrarRespuestaUsuario($usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta) {
-        $sql = "INSERT INTO respuestas_usuario (usuario_id, partida_id, pregunta_id, respuesta_id, correcta) VALUES (?, ?, ?, ?, ?)";
-        Log::info("SQL: $sql [$usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta]");
-        $this->database->execute($sql, [$usuarioId, $partidaId, $preguntaId, $respuestaId, $correcta ? 1 : 0]);
     }
 }

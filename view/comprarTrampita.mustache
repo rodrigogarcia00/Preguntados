@@ -1,0 +1,24 @@
+{{>header}}
+
+<main class="partida-container">
+    <section class="resultado-card">
+        <h2>🃏 Comprar Trampita</h2>
+        <p class="respuesta-correcta-info">Una trampita te permite revelar la respuesta correcta durante el juego.</p>
+
+        <div class="trampita-precio">
+            <span class="precio-valor">$1.00</span>
+            <span class="precio-label">por trampita</span>
+        </div>
+
+        <p>Trampitas actuales: <strong>{{trampitas}}</strong></p>
+
+        <form method="POST" action="/trampita/confirmarCompra">
+            <div class="resultado-acciones">
+                <button type="submit" class="btn-jugar-de-nuevo">Confirmar compra</button>
+                <a href="/home/ver" class="btn-volver">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+{{>footer}}

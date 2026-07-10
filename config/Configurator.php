@@ -83,6 +83,7 @@ class Configurator {
     public function getPreguntaModel() {
         return new PreguntaModel($this->getDatabase());
     }
+
     public function getRankingController() {
         return new RankingController($this->getRankingModel(), $this->getRenderer());
     }
@@ -90,20 +91,21 @@ class Configurator {
     public function getRankingModel() {
         return new RankingModel($this->getDatabase());
     }
-    public function getAdminController() {
-    return new AdminController($this->getRenderer(), $this->getAdminModel(), new Request());
-}
 
-public function getAdminModel() {
-    return new AdminModel($this->getDatabase());
-}
-    
     public function getTrampitaController() {
-        return new TrampitaController($this->getUsuarioModel());
+        return new TrampitaController($this->getUsuarioModel(), $this->getRenderer());
     }
 
     public function getPreguntaController() {
         return new PreguntaController($this->getPreguntaModel(), $this->getRenderer());
+    }
+
+    public function getAdminController() {
+        return new AdminController($this->getRenderer(), $this->getAdminModel(), new Request());
+    }
+
+    public function getAdminModel() {
+        return new AdminModel($this->getDatabase());
     }
 }
 

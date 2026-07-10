@@ -65,6 +65,24 @@ class AdminController
         ]);
     }
 
+    public function trampitas()
+    {
+        $this->validarAdmin();
+
+        $balancePorUsuario = $this->adminModel->getBalanceTrampitasPorUsuario();
+        $totales           = $this->adminModel->getTotalDineroTrampitas();
+
+        $this->renderer->render("adminTrampitas", [
+            "nombre"   => $_SESSION["usuario_nombre"],
+            "puntaje"  => $_SESSION["puntaje"] ?? 0,
+
+            "balance_por_usuario"       => $balancePorUsuario,
+            "total_ventas"              => $totales["total_ventas"],
+            "total_trampitas_vendidas"  => $totales["total_trampitas_vendidas"],
+            "total_dinero"              => number_format($totales["total_dinero"], 2),
+        ]);
+    }
+
     public function graficoCorrectasPorUsuario()
     {
         $this->validarAdmin();
