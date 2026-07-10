@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            margin: 18px 24px;
+        }
+
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 10px;
+            color: #222;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin: 0 0 4px 0;
+        }
+
+        .subtitulo {
+            text-align: center;
+            margin: 0 0 12px 0;
+            color: #555;
+        }
+
+        h2 {
+            font-size: 14px;
+            margin: 14px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #777;
+        }
+
+        .cards {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+        }
+
+        .cards td {
+            border: 1px solid #aaa;
+            padding: 7px 5px;
+            text-align: center;
+            width: 20%;
+        }
+
+        .cards span {
+            display: block;
+            font-size: 9px;
+        }
+
+        .cards strong {
+            display: block;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+
+        .bloque-reporte {
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+
+        .chart-table td {
+            border: none;
+            height: 150px;
+            text-align: center;
+            vertical-align: middle;
+            padding: 0;
+        }
+
+        .chart-img {
+            width: 360px;
+            height: 145px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #aaa;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #eeeeee;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Reporte administrador</h1>
+<p class="subtitulo">Período: {{periodo}}</p>
+
+<table class="cards">
+    <tr>
+        <td>
+            <span>Jugadores</span>
+            <strong>{{cantidad_jugadores}}</strong>
+        </td>
+        <td>
+            <span>Usuarios nuevos</span>
+            <strong>{{usuarios_nuevos}}</strong>
+        </td>
+        <td>
+            <span>Partidas jugadas</span>
+            <strong>{{partidas_jugadas}}</strong>
+        </td>
+        <td>
+            <span>Preguntas en juego</span>
+            <strong>{{preguntas_en_juego}}</strong>
+        </td>
+        <td>
+            <span>Preguntas creadas</span>
+            <strong>{{preguntas_creadas}}</strong>
+        </td>
+    </tr>
+</table>
+
+<div class="bloque-reporte">
+    <h2>Porcentaje de respuestas correctas por usuario</h2>
+
+    <table class="chart-table">
+        <tr>
+            <td>
+                <img src="{{grafico_correctas}}" class="chart-img" width="360" height="145">
+            </td>
+        </tr>
+    </table>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Respondidas</th>
+            <th>Correctas</th>
+            <th>Porcentaje</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {{#correctas_por_usuario}}
+            <tr>
+                <td>{{username}}</td>
+                <td>{{respondidas}}</td>
+                <td>{{correctas}}</td>
+                <td>{{porcentaje}}%</td>
+            </tr>
+        {{/correctas_por_usuario}}
+        </tbody>
+    </table>
+</div>
+
+<div class="bloque-reporte">
+    <h2>Usuarios por país</h2>
+
+    <table class="chart-table">
+        <tr>
+            <td>
+                <img src="{{grafico_pais}}" class="chart-img" width="360" height="145">
+            </td>
+        </tr>
+    </table>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>País</th>
+            <th>Cantidad</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {{#usuarios_por_pais}}
+            <tr>
+                <td>{{pais}}</td>
+                <td>{{cantidad}}</td>
+            </tr>
+        {{/usuarios_por_pais}}
+        </tbody>
+    </table>
+</div>
+
+<div class="bloque-reporte">
+    <h2>Usuarios por sexo</h2>
+
+    <table class="chart-table">
+        <tr>
+            <td>
+                <img src="{{grafico_sexo}}" class="chart-img" width="360" height="145">
+            </td>
+        </tr>
+    </table>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Sexo</th>
+            <th>Cantidad</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {{#usuarios_por_sexo}}
+            <tr>
+                <td>{{sexo}}</td>
+                <td>{{cantidad}}</td>
+            </tr>
+        {{/usuarios_por_sexo}}
+        </tbody>
+    </table>
+</div>
+
+<div class="bloque-reporte">
+    <h2>Usuarios por grupo de edad</h2>
+
+    <table class="chart-table">
+        <tr>
+            <td>
+                <img src="{{grafico_edad}}" class="chart-img" width="360" height="145">
+            </td>
+        </tr>
+    </table>
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th>Grupo</th>
+            <th>Cantidad</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {{#usuarios_por_grupo_edad}}
+            <tr>
+                <td>{{grupo_edad}}</td>
+                <td>{{cantidad}}</td>
+            </tr>
+        {{/usuarios_por_grupo_edad}}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
