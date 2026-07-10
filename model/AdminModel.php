@@ -59,10 +59,10 @@ class AdminModel
     }
 
     public function getCorrectasPorUsuario($periodo)
-{
-    [$desde, $hasta] = $this->getRangoFechas($periodo);
+    {
+        [$desde, $hasta] = $this->getRangoFechas($periodo);
 
-    $sql = "SELECT 
+        $sql = "SELECT 
                 u.id,
                 u.nombre,
                 u.username,
@@ -78,8 +78,8 @@ class AdminModel
             GROUP BY u.id, u.nombre, u.username
             ORDER BY porcentaje DESC";
 
-    return $this->database->query($sql, [$desde, $hasta]);
-}
+        return $this->database->query($sql, [$desde, $hasta]);
+    }
 
     public function getUsuariosPorPais($periodo)
     {
@@ -124,5 +124,35 @@ class AdminModel
                 ORDER BY cantidad DESC";
 
         return $this->database->query($sql, [$desde, $hasta]);
+    }
+
+    public function getBalanceTrampitasPorUsuario()
+    {
+        $sql = "SELECT u.id, u.nombre, u.username, u.trampitas,
+                       COALESCE(SUM(c.cantidad), 0) AS total_compradas,
+                       COALESCE(SUM(c.precio_total), 0) AS total_gastado
+                FROM usuarios u
+                LEFT JOIN compras_trampitas c ON c.usuario_id = u.id
+                WHERE u.rol = 'JUGADOR'
+                GROUP BY u.id, u.nombre, u.username, u.trampitas
+                ORDER BY total_compradas DESC";
+
+        return $this->database->query($sql, []);
+    }
+
+    public function getTotalDineroTrampitas()
+    {
+        $sql = "SELECT 
+                    COUNT(*) AS total_ventas,
+                    COALESCE(SUM(cantidad), 0) AS total_trampitas_vendidas,
+                    COALESCE(SUM(precio_total), 0) AS total_dinero
+                FROM compras_trampitas";
+
+        $filas = $this->database->query($sql, []);
+        return !empty($filas) ? $filas[0] : [
+            'total_ventas' => 0,
+            'total_trampitas_vendidas' => 0,
+            'total_dinero' => 0
+        ];
     }
 }

@@ -7,16 +7,19 @@
         <p>Reportes generales de la aplicación</p>
 
         <form method="GET" action="/admin/reportes" class="admin-filtros">
-            <select name="periodo">
-                <option value="dia" {{#filtro_dia}}selected{{/filtro_dia}}>Día</option>
-                <option value="semana" {{#filtro_semana}}selected{{/filtro_semana}}>Semana</option>
-                <option value="mes" {{#filtro_mes}}selected{{/filtro_mes}}>Mes</option>
-                <option value="anio" {{#filtro_anio}}selected{{/filtro_anio}}>Año</option>
-            </select>
+    <select name="periodo">
+        <option value="dia" {{#filtro_dia}}selected{{/filtro_dia}}>Día</option>
+        <option value="semana" {{#filtro_semana}}selected{{/filtro_semana}}>Semana</option>
+        <option value="mes" {{#filtro_mes}}selected{{/filtro_mes}}>Mes</option>
+        <option value="anio" {{#filtro_anio}}selected{{/filtro_anio}}>Año</option>
+    </select>
 
-            <button type="submit">Filtrar</button>
-            <button type="button" onclick="window.print()">Imprimir tablas</button>
-        </form>
+    <button type="submit" class="btn-admin-filtro">Filtrar</button>
+
+    <a href="/admin/imprimirReportes?periodo={{periodo}}" target="_blank" class="btn-admin-filtro">
+        Descargar PDF
+    </a>
+</form>
     </section>
 
     <section class="admin-cards">
