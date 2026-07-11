@@ -1,8 +1,6 @@
 <?php
 
 class PartidaController {
-
-    private const LOGIN_VER = "/login/ver";
     private $renderer;
     private $partidaModel;
     private $preguntaModel;
@@ -17,11 +15,6 @@ class PartidaController {
     }
 
     public function nueva() {
-        session_start();
-
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to(self::LOGIN_VER);
-        }
 
         $usuarioId = $_SESSION["usuario_id"];
 
@@ -33,11 +26,6 @@ class PartidaController {
     }
 
     public function responder() {
-        session_start();
-
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to(self::LOGIN_VER);
-        }
 
         if (!isset($_SESSION["partida_id"]) || !isset($_POST["pregunta_id"])) {
             Redirect::to("/home/ver");
@@ -130,11 +118,6 @@ class PartidaController {
     }
 
     public function jugar() {
-        session_start();
-
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to(self::LOGIN_VER);
-        }
 
         if (!isset($_SESSION["partida_id"])) {
             Redirect::to("/partida/nueva");
@@ -144,10 +127,6 @@ class PartidaController {
     }
 
     public function usarTrampita() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"]) || !isset($_SESSION["partida_id"])) {
-            Redirect::to("/login");
-        }
 
         $preguntaId = $_POST["pregunta_id"] ?? null;
         $usuarioId = $_SESSION["usuario_id"];
@@ -174,10 +153,6 @@ class PartidaController {
     }
 
     public function reportar() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to(self::LOGIN_VER);
-        }
 
         $preguntaId = $_POST["pregunta_id"] ?? null;
         $motivo = $_POST["motivo"] ?? null;

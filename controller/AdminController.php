@@ -160,15 +160,6 @@ class AdminController
 
     private function validarAdmin()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            exit;
-        }
-
         if (!isset($_SESSION["usuario_rol"]) || $_SESSION["usuario_rol"] !== "ADMIN") {
             Redirect::to("/home/ver");
             exit;

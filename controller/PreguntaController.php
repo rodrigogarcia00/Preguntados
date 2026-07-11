@@ -10,20 +10,12 @@ class PreguntaController {
     }
 
     public function sugerir() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login");
-        }
 
         $data["categorias"] = $this->preguntaModel->getCategorias();
         $this->renderer->render("sugerirPregunta", $data);
     }
 
     public function procesarSugerencia() {
-        session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login");
-        }
 
         $usuarioId = $_SESSION["usuario_id"];
         $categoriaId = $_POST["categoria_id"] ?? null;

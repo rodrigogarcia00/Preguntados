@@ -108,18 +108,12 @@ class LoginController{
     }
 
     public function ver() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $error = $_SESSION["error"] ?? null;
         unset($_SESSION["error"]);
         $this->renderer->render("login", ["error" => $error]);
     }
 
     public function validar() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
 
     $username = $this->request->post("username");
     $password = $this->request->post("password");
@@ -163,9 +157,6 @@ Redirect::to("/home/ver");
 }
 
     public function logout() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         session_destroy();
         Redirect::to(self::LOGIN_VIEW);
     }

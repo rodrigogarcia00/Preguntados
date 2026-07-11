@@ -10,11 +10,6 @@ class TrampitaController {
     }
 
     public function ver() {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            return;
-        }
         $this->renderer->render("comprarTrampita", [
             "nombre"    => $_SESSION["usuario_nombre"],
             "puntaje"   => $_SESSION["puntaje"] ?? 0,
@@ -23,12 +18,6 @@ class TrampitaController {
     }
 
     public function confirmarCompra() {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            return;
-        }
-
         $usuarioId = $_SESSION["usuario_id"];
         $cantidad  = 1;
         $precio    = 1.00;
