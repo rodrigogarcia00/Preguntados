@@ -107,5 +107,13 @@ class Configurator {
     public function getAdminModel() {
         return new AdminModel($this->getDatabase());
     }
+
+    public function getEditorModel() {
+        return new EditorModel($this->getDatabase());
+    }
+
+    public function getEditorController() {
+        return new EditorController($this->getEditorModel(), $this->getRenderer());
+    }
 }
 

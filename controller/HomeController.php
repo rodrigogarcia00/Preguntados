@@ -38,6 +38,8 @@ class HomeController {
             }
         }
 
+        $rol = $_SESSION['usuario_rol'] ?? '';
+
         $this->renderer->render("verHomeView", [
             "nombre"              => $_SESSION["usuario_nombre"],
             "puntaje"             => $puntaje,
@@ -51,7 +53,10 @@ class HomeController {
             "partidas_pendientes" => false,
             "pendientes"          => [],
 
-            "mensaje_exito"       => $mensaje_exito
+            "mensaje_exito"       => $mensaje_exito,
+
+            "esEditor"            => ($rol === 'EDITOR'),
+            "esAdmin"             => ($rol === 'ADMIN')
         ]);
     }
 }

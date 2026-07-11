@@ -1,0 +1,116 @@
+{{>header}}
+
+<main class="editor-container">
+    <div class="editor-card">
+        <h2>Panel de Editor</h2>
+        <p>Revisá y gestioná las preguntas sugeridas por la comunidad.</p>
+
+        <div class="table-responsive">
+            <table class="editor-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Categoría</th>
+                    <th>Pregunta</th>
+                    <th>Opción A</th>
+                    <th>Opción B</th>
+                    <th>Opción C</th>
+                    <th>Opción D</th>
+                    <th>Correcta</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#sugeridas}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td><span class="badge-cat">{{categoria_nombre}}</span></td>
+                        <td>{{pregunta}}</td>
+                        <td>{{opcion_a}}</td>
+                        <td>{{opcion_b}}</td>
+                        <td>{{opcion_c}}</td>
+                        <td>{{opcion_d}}</td>
+                        <td><strong>{{respuesta_correcta}}</strong></td>
+                        <td class="acciones-td">
+                            <form action="/editor/aprobar" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn-aprobar" title="Aprobar">✔</button>
+                            </form>
+
+                            <form action="/editor/editar" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn-editar" title="Editar">✏</button>
+                            </form>
+
+                            <form action="/editor/rechazar" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn-rechazar" title="Rechazar">✖</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/sugeridas}}
+                {{^sugeridas}}
+                    <tr>
+                        <td colspan="9">No hay preguntas sugeridas pendientes.</td>
+                    </tr>
+                {{/sugeridas}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="editor-card" style="margin-top: 40px;">
+        <h2>Preguntas Reportadas</h2>
+        <p>Revisá las preguntas que los jugadores reportaron por errores o problemas.</p>
+
+        <div class="table-responsive">
+            <table class="editor-table">
+                <thead>
+                <tr>
+                    <th>ID Rep.</th>
+                    <th>Categoría</th>
+                    <th>Pregunta original</th>
+                    <th>Opciones de Respuesta</th> <th>Motivo del Reporte</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#reportadas}}
+                    <tr>
+                        <td>#{{reporte_id}}</td>
+                        <td><span class="badge-cat">{{categoria_nombre}}</span></td>
+                        <td>{{pregunta}}</td>
+                        <td style="font-size: 13px; color: #444;">{{opciones_respuestas}}</td>
+                        <td style="color: #c0392b; font-weight: bold;">{{motivo}}</td>
+                        <td class="acciones-td">
+                            <form action="/editor/desestimarReporte" method="POST" style="display:inline;">
+                                <input type="hidden" name="reporte_id" value="{{reporte_id}}">
+                                <button type="submit" class="btn-aprobar" title="Desestimar Reporte">✔ Falsa alarma</button>
+                            </form>
+
+                            <form action="/editor/deshabilitarPregunta" method="POST" style="display:inline;">
+                                <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
+                                <input type="hidden" name="reporte_id" value="{{reporte_id}}">
+                                <button type="submit" class="btn-rechazar" title="Eliminar Pregunta del Juego">✖ Dar de baja</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/reportadas}}
+                {{^reportadas}}
+                    <tr>
+                        <td colspan="6">No hay reportes pendientes. ¡Todo en orden!</td>
+                    </tr>
+                {{/reportadas}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="/home/ver" class="action-card action-play" style="display:inline-flex; width:auto; padding: 12px 32px;">
+            ← Volver al lobby
+        </a>
+    </div>
+</main>
+
+{{>footer}}
