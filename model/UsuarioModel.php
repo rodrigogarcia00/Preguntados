@@ -62,20 +62,17 @@ class UsuarioModel {
 
     public function registrarCompraTrampita($usuarioId, $cantidad, $precioTotal) {
         // 1. Guardamos el registro de la venta en el historial
-        $sqlCompra = "INSERT INTO compras_trampitas (usuario_id, cantidad, precio_total) 
-                      VALUES ('$usuarioId', '$cantidad', '$precioTotal')";
-        $this->database->execute($sqlCompra);
+        $sqlCompra = "INSERT INTO compras_trampitas (usuario_id, cantidad, precio_total) VALUES (?, ?, ?)";
+        $this->database->execute($sqlCompra, [$usuarioId, $cantidad, $precioTotal]);
 
         // 2. Le sumamos las trampitas compradas a la "billetera" del usuario
-        $sqlActualizarStock = "UPDATE usuarios 
-                               SET trampitas = trampitas + $cantidad 
-                               WHERE id = '$usuarioId'";
-        $this->database->execute($sqlActualizarStock);
+        $sqlActualizarStock = "UPDATE usuarios SET trampitas = trampitas + ? WHERE id = ?";
+        $this->database->execute($sqlActualizarStock, [$cantidad, $usuarioId]);
     }
 
     public function descontarTrampita($usuarioId) {
         // Le restamos 1 asegurándonos de que tenga más de 0
-        $sql = "UPDATE usuarios SET trampitas = trampitas - 1 WHERE id = '$usuarioId' AND trampitas > 0";
-        $this->database->execute($sql);
+        $sql = "UPDATE usuarios SET trampitas = trampitas - 1 WHERE id = ? AND trampitas > 0";
+        $this->database->execute($sql, [$usuarioId]);
     }
 }

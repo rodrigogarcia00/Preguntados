@@ -198,9 +198,9 @@ class PreguntaModel {
     public function guardarPreguntaSugerida($usuarioId, $categoriaId, $pregunta, $opA, $opB, $opC, $opD, $correcta) {
         $sql = "INSERT INTO preguntas_sugeridas 
             (usuario_id, categoria_id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, respuesta_correcta) 
-            VALUES ('$usuarioId', '$categoriaId', '$pregunta', '$opA', '$opB', '$opC', '$opD', '$correcta')";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $this->database->execute($sql);
+        $this->database->execute($sql, [$usuarioId, $categoriaId, $pregunta, $opA, $opB, $opC, $opD, $correcta]);
     }
 
     public function getCategorias() {
