@@ -15,7 +15,25 @@ class PartidaModel {
         return $this->database->getLastInsertId();
     }
 
+    private function yaRespondioEnEstaPartida($partidaId, $preguntaId) {
+        $sqlCheck = "SELECT id FROM respuestas_usuario WHERE partida_id = ? AND pregunta_id = ?";
+        $resultado = $this->database->query($sqlCheck, [$partidaId, $preguntaId]);
+        return !empty($resultado);
+    }
+
     public function responder($partidaId, $preguntaId, $respuestaId) {
+        // 1. Evitamos el Fatal Error por doble click o trampa
+        if ($this->yaRespondioEnEstaPartida($partidaId, $preguntaId)) {
+            $this->finalizar($partidaId);
+            return [
+                "correcta" => false,
+                "puntaje" => $this->obtenerPuntaje($partidaId),
+                "mensaje" => "Esta pregunta ya había sido procesada.",
+                "respuesta_correcta" => "No disponible",
+                "pregunta_id" => $preguntaId
+            ];
+        }
+
         $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
 
         if ($respuestaCorrecta === null) {
@@ -51,6 +69,31 @@ class PartidaModel {
             "puntaje" => $this->obtenerPuntaje($partidaId),
             "mensaje" => "Respuesta incorrecta.",
             "respuesta_correcta" => $respuestaCorrecta["texto"],
+            "pregunta_id" => $preguntaId
+        ];
+    }
+
+    public function responderFueraDeTiempo($partidaId, $preguntaId) {
+        if ($this->yaRespondioEnEstaPartida($partidaId, $preguntaId)) {
+            $this->finalizar($partidaId);
+            return [
+                "correcta" => false,
+                "puntaje" => $this->obtenerPuntaje($partidaId),
+                "mensaje" => "El tiempo se agotó (la pregunta ya fue procesada).",
+                "respuesta_correcta" => "No disponible",
+                "pregunta_id" => $preguntaId
+            ];
+        }
+
+        $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
+        $this->registrarRespuesta($partidaId, $preguntaId, null, false);
+        $this->preguntaModel->actualizarNivel($preguntaId, false);
+        $this->finalizar($partidaId);
+        return [
+            "correcta" => false,
+            "puntaje" => $this->obtenerPuntaje($partidaId),
+            "mensaje" => "Se terminó el tiempo.",
+            "respuesta_correcta" => $respuestaCorrecta ? $respuestaCorrecta["texto"] : "No disponible",
             "pregunta_id" => $preguntaId
         ];
     }
@@ -159,20 +202,6 @@ class PartidaModel {
         $this->database->execute($sql, [$partidaId]);
     }
 
-    public function responderFueraDeTiempo($partidaId, $preguntaId) {
-        $respuestaCorrecta = $this->buscarRespuestaCorrecta($preguntaId);
-        $this->registrarRespuesta($partidaId, $preguntaId, null, false);
-        $this->preguntaModel->actualizarNivel($preguntaId, false);
-        $this->finalizar($partidaId);
-        return [
-            "correcta" => false,
-            "puntaje" => $this->obtenerPuntaje($partidaId),
-            "mensaje" => "Se terminó el tiempo.",
-            "respuesta_correcta" => $respuestaCorrecta ? $respuestaCorrecta["texto"] : "No disponible",
-            "pregunta_id" => $preguntaId
-        ];
-    }
-
     public function obtenerEstadisticasLobby($usuarioId) {
         $sql = "SELECT puntaje_total, 
                    (SELECT COUNT(*) + 1 FROM usuarios WHERE puntaje_total > u.puntaje_total AND activo = 1) as posicion
@@ -183,13 +212,13 @@ class PartidaModel {
     }
 
     public function obtenerRespuestaCorrecta($preguntaId) {
-        $sql = "SELECT id, texto FROM respuestas WHERE pregunta_id = '$preguntaId' AND es_correcta = 1";
-        $resultado = $this->database->query($sql);
+        $sql = "SELECT id, texto FROM respuestas WHERE pregunta_id = ? AND es_correcta = 1";
+        $resultado = $this->database->query($sql, [$preguntaId]);
         return $resultado[0] ?? null;
     }
 
     public function guardarReporte($preguntaId, $usuarioId, $motivo) {
-        $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES ('$preguntaId', '$usuarioId', '$motivo')";
-        $this->database->execute($sql);
+        $sql = "INSERT INTO reportes (pregunta_id, usuario_id, motivo) VALUES (?, ?, ?)";
+        $this->database->execute($sql, [$preguntaId, $usuarioId, $motivo]);
     }
 }
