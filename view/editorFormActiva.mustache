@@ -1,0 +1,42 @@
+{{>header}}
+<main class="sugerir-container">
+    <div class="sugerir-card">
+        <h2>{{#id}}Editar Pregunta Activa{{/id}}{{^id}}Crear Nueva Pregunta{{/id}}</h2>
+        <p>{{#id}}Modificando una pregunta del juego.{{/id}}{{^id}}Agregá una pregunta directo a la base de datos.{{/id}}</p>
+
+        <form action="{{#id}}/editor/procesarEdicionActiva{{/id}}{{^id}}/editor/procesarCreacionActiva{{/id}}" method="POST" class="form-sugerir">
+
+            <input type="hidden" name="pregunta_id" value="{{id}}">
+            <input type="hidden" name="reporte_id" value="{{reporte_id}}">
+
+            <input type="hidden" name="id_a" value="{{id_a}}">
+            <input type="hidden" name="id_b" value="{{id_b}}">
+            <input type="hidden" name="id_c" value="{{id_c}}">
+            <input type="hidden" name="id_d" value="{{id_d}}">
+
+            <label>Pregunta:</label>
+            <input type="text" name="enunciado" value="{{enunciado}}" required>
+
+            <label>ID Categoría (1:Historia, 2:Deportes, 3:Entretenimiento, 4:Arte, 5:Ciencia):</label>
+            <input type="number" name="categoria" value="{{categoria_id}}" min="1" max="5" required>
+
+            <label>Opción A:</label>
+            <input type="text" name="opcion_a" value="{{opcion_a}}" required>
+
+            <label>Opción B:</label>
+            <input type="text" name="opcion_b" value="{{opcion_b}}" required>
+
+            <label>Opción C:</label>
+            <input type="text" name="opcion_c" value="{{opcion_c}}" required>
+
+            <label>Opción D:</label>
+            <input type="text" name="opcion_d" value="{{opcion_d}}" required>
+
+            <label>Respuesta Correcta (A, B, C o D):</label>
+            <input type="text" name="respuesta_correcta" value="{{respuesta_correcta}}" required>
+
+            <button type="submit" class="btn-primario">Guardar Pregunta</button>
+        </form>
+    </div>
+</main>
+{{>footer}}

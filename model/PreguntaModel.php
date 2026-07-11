@@ -27,6 +27,7 @@ class PreguntaModel {
                 c.color AS categoria_color
             FROM preguntas p
             INNER JOIN categorias c ON c.id = p.categoria_id
+            WHERE p.activa = 1 
             ORDER BY RAND()
             LIMIT 1";
 
@@ -101,7 +102,7 @@ class PreguntaModel {
     public function obtenerPreguntaNoVista($usuarioId) {
         $sql = "SELECT p.*
                 FROM preguntas p
-                WHERE p.id NOT IN (
+                WHERE p.activa = 1 AND p.id NOT IN (
                     SELECT pregunta_id
                     FROM usuario_pregunta_vista
                     WHERE usuario_id = ?
@@ -220,7 +221,7 @@ class PreguntaModel {
     private function obtenerPreguntaNoVistaMasCercanaAlNivel($usuarioId, $nivelObjetivo) {
         $sql = "SELECT p.*
                 FROM preguntas p
-                WHERE p.id NOT IN (
+                WHERE p.activa = 1 AND p.id NOT IN (
                     SELECT pregunta_id
                     FROM usuario_pregunta_vista
                     WHERE usuario_id = ?
@@ -236,6 +237,7 @@ class PreguntaModel {
     private function obtenerPreguntaMasCercanaAlNivel($nivelObjetivo) {
         $sql = "SELECT p.*
                 FROM preguntas p
+                WHERE p.activa = 1
                 ORDER BY ABS(p.nivel - ?), RAND()
                 LIMIT 1";
         
