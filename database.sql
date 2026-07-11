@@ -169,3 +169,5 @@ CREATE TABLE respuestas_usuario (
                                     FOREIGN KEY (pregunta_id) REFERENCES preguntas(id),
                                     FOREIGN KEY (respuesta_id) REFERENCES respuestas(id)
 );
+
+ALTER TABLE preguntas ADD COLUMN activa TINYINT(1) DEFAULT 1;

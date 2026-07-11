@@ -58,6 +58,16 @@
         </a>
     </section>
 
+    <div style="text-align: center;">
+        {{#esEditor}}
+            <a href="/editor/list" class="action-card action-play" style="display:inline-flex; width:auto; padding: 12px 32px;">Panel de Editor</a>
+        {{/esEditor}}
+
+        {{#esAdmin}}
+            <a href="/admin/reportes" class="action-card action-play" style="display:inline-flex; width:auto; padding: 12px 32px;">Panel de Administrador</a>
+        {{/esAdmin}}
+    </div>
+
     <!-- PARTIDAS EN ESPERA (desafíos recibidos) -->
     {{#partidas_pendientes}}
         <section class="pending-section">
