@@ -3,6 +3,9 @@
 <main class="editor-container">
     <div class="editor-card">
         <h2>Panel de Editor</h2>
+
+        <a href="/editor/crearActiva" class="btn-primario" style="display:inline-block; margin-bottom:20px; text-decoration:none;">+ Crear Nueva Pregunta</a>
+
         <p>Revisá y gestioná las preguntas sugeridas por la comunidad.</p>
 
         <div class="table-responsive">
@@ -85,13 +88,19 @@
                         <td class="acciones-td">
                             <form action="/editor/desestimarReporte" method="POST" style="display:inline;">
                                 <input type="hidden" name="reporte_id" value="{{reporte_id}}">
-                                <button type="submit" class="btn-aprobar" title="Desestimar Reporte">✔ Falsa alarma</button>
+                                <button type="submit" class="btn-aprobar" title="Desestimar Reporte">✔</button>
+                            </form>
+
+                            <form action="/editor/editarActiva" method="POST" style="display:inline;">
+                                <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
+                                <input type="hidden" name="reporte_id" value="{{reporte_id}}">
+                                <button type="submit" class="btn-editar" title="Corregir Error">✏</button>
                             </form>
 
                             <form action="/editor/deshabilitarPregunta" method="POST" style="display:inline;">
                                 <input type="hidden" name="pregunta_id" value="{{pregunta_id}}">
                                 <input type="hidden" name="reporte_id" value="{{reporte_id}}">
-                                <button type="submit" class="btn-rechazar" title="Eliminar Pregunta del Juego">✖ Dar de baja</button>
+                                <button type="submit" class="btn-rechazar" title="Eliminar Pregunta del Juego">✖</button>
                             </form>
                         </td>
                     </tr>
@@ -101,6 +110,34 @@
                         <td colspan="6">No hay reportes pendientes. ¡Todo en orden!</td>
                     </tr>
                 {{/reportadas}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="editor-card" style="margin-top: 40px;">
+        <h2>Base de Datos de Preguntas Activas</h2>
+        <div class="table-responsive">
+            <table class="editor-table">
+                <thead><tr><th>ID</th><th>Categoría</th><th>Pregunta</th><th>Acciones</th></tr></thead>
+                <tbody>
+                {{#activas}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td><span class="badge-cat">{{categoria_nombre}}</span></td>
+                        <td>{{enunciado}}</td>
+                        <td class="acciones-td">
+                            <form action="/editor/editarActiva" method="POST" style="display:inline;">
+                                <input type="hidden" name="pregunta_id" value="{{id}}">
+                                <button type="submit" class="btn-editar">✏ Editar</button>
+                            </form>
+                            <form action="/editor/deshabilitarPregunta" method="POST" style="display:inline;">
+                                <input type="hidden" name="pregunta_id" value="{{id}}">
+                                <button type="submit" class="btn-rechazar" onclick="return confirm('¿Seguro que querés dar de baja esta pregunta?');">✖ Bajar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/activas}}
                 </tbody>
             </table>
         </div>
