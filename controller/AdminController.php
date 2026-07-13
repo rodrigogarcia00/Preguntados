@@ -15,8 +15,6 @@ class AdminController
 
     public function reportes()
     {
-        $this->validarAdmin();
-
         $periodo = $this->obtenerPeriodo();
 
         $resumen = $this->adminModel->getResumen($periodo);
@@ -67,8 +65,6 @@ class AdminController
 
     public function trampitas()
     {
-        $this->validarAdmin();
-
         $balancePorUsuario = $this->adminModel->getBalanceTrampitasPorUsuario();
         $totales           = $this->adminModel->getTotalDineroTrampitas();
 
@@ -85,8 +81,6 @@ class AdminController
 
     public function graficoCorrectasPorUsuario()
     {
-        $this->validarAdmin();
-
         $periodo = $this->obtenerPeriodo();
 
         $datos = $this->adminModel->getCorrectasPorUsuario($periodo);
@@ -101,8 +95,6 @@ class AdminController
 
     public function graficoUsuariosPorPais()
     {
-        $this->validarAdmin();
-
         $periodo = $this->obtenerPeriodo();
 
         $datos = $this->adminModel->getUsuariosPorPais($periodo);
@@ -117,8 +109,6 @@ class AdminController
 
     public function graficoUsuariosPorSexo()
     {
-        $this->validarAdmin();
-
         $periodo = $this->obtenerPeriodo();
 
         $datos = $this->adminModel->getUsuariosPorSexo($periodo);
@@ -133,8 +123,6 @@ class AdminController
 
     public function graficoUsuariosPorEdad()
     {
-        $this->validarAdmin();
-
         $periodo = $this->obtenerPeriodo();
 
         $datos = $this->adminModel->getUsuariosPorGrupoEdad($periodo);
@@ -156,14 +144,6 @@ class AdminController
         }
 
         return $periodo;
-    }
-
-    private function validarAdmin()
-    {
-        if (!isset($_SESSION["usuario_rol"]) || $_SESSION["usuario_rol"] !== "ADMIN") {
-            Redirect::to("/home/ver");
-            exit;
-        }
     }
 
     private function generarGraficoBarras($titulo, $datos, $campoTexto, $campoValor)
@@ -263,11 +243,9 @@ class AdminController
         }
 
         return $filas;
-    }   
+    }
     public function imprimirReportes()
 {
-    $this->validarAdmin();
-
     $periodo = $this->obtenerPeriodo();
 
     $resumen = $this->adminModel->getResumen($periodo);
