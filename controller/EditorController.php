@@ -10,8 +10,6 @@ class EditorController{
     }
 
     public function list() {
-        $this->validarEditor();
-
         $datos['sugeridas'] = $this->model->getPreguntasSugeridas();
         $datos['reportadas'] = $this->model->getPreguntasReportadas();
         $datos['activas'] = $this->model->getTodasLasPreguntasActivas();
@@ -20,7 +18,6 @@ class EditorController{
     }
 
     public function editar() {
-        $this->validarEditor();
         $id = $_POST['id'];
 
         // Buscamos los datos de esa pregunta en la BD para precargar el formulario
@@ -31,8 +28,6 @@ class EditorController{
     }
 
     public function procesarEdicion() {
-        $this->validarEditor();
-
         $id = $_POST['id'];
         $pregunta = $_POST['enunciado'];
         $categoria_id = $_POST['categoria'];
@@ -47,38 +42,18 @@ class EditorController{
     }
 
     public function aprobar() {
-        $this->validarEditor();
         $id = $_POST['id'];
         $this->model->aprobarPregunta($id);
         Redirect::to('/editor/list');
     }
 
     public function rechazar() {
-        $this->validarEditor();
         $id = $_POST['id'];
         $this->model->rechazarPregunta($id);
         Redirect::to('/editor/list');
     }
 
-    private function validarEditor()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION["usuario_id"])) {
-            Redirect::to("/login/ver");
-            exit;
-        }
-
-        if (!isset($_SESSION["usuario_rol"]) || $_SESSION["usuario_rol"] !== "EDITOR") {
-            Redirect::to("/home/ver");
-            exit;
-        }
-    }
-
     public function desestimarReporte() {
-        $this->validarEditor();
         $reporte_id = $_POST['reporte_id'];
 
         $this->model->desestimarReporte($reporte_id);
@@ -86,7 +61,6 @@ class EditorController{
     }
 
     public function deshabilitarPregunta() {
-        $this->validarEditor();
         $pregunta_id = $_POST['pregunta_id'];
         $reporte_id = $_POST['reporte_id'];
 
@@ -95,13 +69,11 @@ class EditorController{
     }
 
     public function crearActiva() {
-        $this->validarEditor();
         // Renderizamos un formulario vacío
         $this->renderer->render('editorFormActiva');
     }
 
     public function procesarCreacionActiva() {
-        $this->validarEditor();
         $enunciado = $_POST['enunciado'];
         $categoria_id = $_POST['categoria'];
         $correcta = $_POST['respuesta_correcta'];
@@ -112,7 +84,6 @@ class EditorController{
     }
 
     public function editarActiva() {
-        $this->validarEditor();
         $pregunta_id = $_POST['pregunta_id'];
 
         $datos = $this->model->getPreguntaActivaConRespuestas($pregunta_id);
@@ -126,8 +97,6 @@ class EditorController{
     }
 
     public function procesarEdicionActiva() {
-        $this->validarEditor();
-
         $pregunta_id = $_POST['pregunta_id'];
         $reporte_id = $_POST['reporte_id'] ?? null;
         $enunciado = $_POST['enunciado'];
