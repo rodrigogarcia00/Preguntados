@@ -21,6 +21,11 @@ class SessionHelper {
             return;
         }
 
+        if (self::esRutaEditor($controller, $method)) {
+            self::validarEditor();
+            return;
+        }
+
         if (!self::esRutaPublica($controller, $method)) {
             self::validarUsuarioLogueado();
         }
@@ -33,6 +38,9 @@ class SessionHelper {
     private static function redirigirUsuarioLogueado() {
         if (self::esAdminLogueado()) {
             Redirect::to("/admin/reportes");
+        }
+        if (self::esEditorLogueado()) {
+            Redirect::to("/editor/list");
         }
         Redirect::to("/home/ver");
     }
@@ -53,12 +61,26 @@ class SessionHelper {
         }
     }
 
+    private static function validarEditor() {
+        if (!self::estaLogueado()) {
+            Redirect::to("/login/ver");
+        }
+
+        if (!self::esEditorLogueado()) {
+            Redirect::to("/home/ver");
+        }
+    }
+
     private static function estaLogueado() {
         return isset($_SESSION["usuario_id"]);
     }
 
     private static function esAdminLogueado() {
         return isset($_SESSION["usuario_rol"]) && $_SESSION["usuario_rol"] === "ADMIN";
+    }
+
+    private static function esEditorLogueado() {
+        return isset($_SESSION["usuario_rol"]) && $_SESSION["usuario_rol"] === "EDITOR";
     }
 
     private static function esRutaPublica($controller, $method) {
@@ -74,5 +96,9 @@ class SessionHelper {
 
     private static function esRutaAdmin($controller, $method) {
         return $controller === "admin";
+    }
+
+    private static function esRutaEditor($controller, $method) {
+        return $controller === "editor";
     }
 }
