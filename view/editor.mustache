@@ -5,6 +5,7 @@
         <h2>Panel de Editor</h2>
 
         <a href="/editor/crearActiva" class="btn-primario" style="display:inline-block; margin-bottom:20px; text-decoration:none;">+ Crear Nueva Pregunta</a>
+        <a href="/editor/categorias" class="btn-primario" style="display:inline-block; margin-bottom:20px; margin-left:10px; text-decoration:none; background-color:#2980b9;">* Gestionar Categorías</a>
 
         <p>Revisá y gestioná las preguntas sugeridas por la comunidad.</p>
 
@@ -116,28 +117,59 @@
     </div>
 
     <div class="editor-card" style="margin-top: 40px;">
-        <h2>Base de Datos de Preguntas Activas</h2>
+        <h2>Base de Datos de Preguntas</h2>
+        <p>Listado histórico de todas las preguntas del juego.</p>
         <div class="table-responsive">
             <table class="editor-table">
-                <thead><tr><th>ID</th><th>Categoría</th><th>Pregunta</th><th>Acciones</th></tr></thead>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Categoría</th>
+                    <th>Pregunta</th>
+                    <th>Estado</th> <th>Acciones</th>
+                </tr>
+                </thead>
                 <tbody>
-                {{#activas}}
-                    <tr>
-                        <td>{{id}}</td>
-                        <td><span class="badge-cat">{{categoria_nombre}}</span></td>
-                        <td>{{enunciado}}</td>
-                        <td class="acciones-td">
-                            <form action="/editor/editarActiva" method="POST" style="display:inline;">
-                                <input type="hidden" name="pregunta_id" value="{{id}}">
-                                <button type="submit" class="btn-editar">✏ Editar</button>
-                            </form>
+                {{#preguntas}} <tr>
+                    <td>{{id}}</td>
+                    <td><span class="badge-cat">{{categoria_nombre}}</span></td>
+                    <td>{{enunciado}}</td>
+                    <td>
+                        {{#activa}}
+                            {{#categoria_activa}}
+                                <span style="color: #27ae60; font-weight: bold;">Activa</span>
+                            {{/categoria_activa}}
+                            {{^categoria_activa}}
+                                <span style="color: #f39c12; font-weight: bold;" title="La categoría está dada de baja">Activa (Cat. Baja)</span>
+                            {{/categoria_activa}}
+                        {{/activa}}
+
+                        {{^activa}}
+                            <span style="color: #c0392b; font-weight: bold;">Inactiva</span>
+                        {{/activa}}
+                    </td>
+                    <td class="acciones-td">
+                        <form action="/editor/editarActiva" method="POST" style="display:inline;">
+                            <input type="hidden" name="pregunta_id" value="{{id}}">
+                            <button type="submit" class="btn-editar">✏ Editar</button>
+                        </form>
+
+                        {{#activa}}
                             <form action="/editor/deshabilitarPregunta" method="POST" style="display:inline;">
                                 <input type="hidden" name="pregunta_id" value="{{id}}">
                                 <button type="submit" class="btn-rechazar" onclick="return confirm('¿Seguro que querés dar de baja esta pregunta?');">✖ Bajar</button>
                             </form>
-                        </td>
-                    </tr>
-                {{/activas}}
+                        {{/activa}}
+
+                        {{^activa}}
+                            <form action="/editor/habilitarPregunta" method="POST" style="display:inline;">
+                                <input type="hidden" name="pregunta_id" value="{{id}}">
+                                <button type="submit" class="btn-aprobar" onclick="return confirm('¿Seguro que querés volver a activar esta pregunta?');" style="background-color: #27ae60; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">✔ Activar</button>
+                            </form>
+                        {{/activa}}
+                    </td>
+                </tr>
+                {{/preguntas}}
                 </tbody>
             </table>
         </div>

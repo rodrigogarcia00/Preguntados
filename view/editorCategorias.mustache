@@ -1,0 +1,58 @@
+{{>header}}
+<main class="editor-container">
+    <div class="editor-card">
+        <h2>Gestión de Categorías</h2>
+
+        <a href="/editor/crearCategoria" class="btn-primario" style="display:inline-block; margin-bottom:20px; text-decoration:none;">+ Crear Nueva Categoría</a>
+        <a href="/editor/list" class="btn-secundario" style="display:inline-block; margin-bottom:20px; margin-left: 10px; text-decoration:none;">Volver al Editor</a>
+
+        <div class="table-responsive">
+            <table class="editor-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Color</th>
+                    <th>Muestra</th>
+                    <th>Estado</th> <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#categorias}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{nombre}}</td>
+                        <td>{{color}}</td>
+                        <td><div style="width: 30px; height: 30px; background-color: {{color}}; border-radius: 5px; margin: auto;"></div></td>
+                        <td>
+                            {{#activa}}<span style="color: #27ae60; font-weight: bold;">Activa</span>{{/activa}}
+                            {{^activa}}<span style="color: #c0392b; font-weight: bold;">Inactiva</span>{{/activa}}
+                        </td>
+                        <td class="acciones-td">
+                            <form action="/editor/editarCategoria" method="POST" style="display:inline;">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn-editar" title="Editar">✏</button>
+                            </form>
+
+                            {{#activa}}
+                                <form action="/editor/eliminarCategoria" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que querés dar de baja esta categoría? Dejará de salir en el juego.');">
+                                    <input type="hidden" name="id" value="{{id}}">
+                                    <button type="submit" class="btn-rechazar" title="Dar de Baja">✖</button>
+                                </form>
+                            {{/activa}}
+
+                            {{^activa}}
+                                <form action="/editor/activarCategoria" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que querés volver a activar esta categoría? Las preguntas asociadas volverán a salir en la ruleta.');">
+                                    <input type="hidden" name="id" value="{{id}}">
+                                    <button type="submit" class="btn-aprobar" title="Dar de Alta" style="background-color: #27ae60; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;">✔</button>
+                                </form>
+                            {{/activa}}
+                        </td>
+                    </tr>
+                {{/categorias}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{{>footer}}

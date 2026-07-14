@@ -83,18 +83,24 @@ class EditorModel
         return $this->database->execute("UPDATE reportes SET estado = 'DESESTIMADO' WHERE id = ?", [$reporte_id]);
     }
 
-    public function deshabilitarPreguntaReportada($pregunta_id, $reporte_id) {
+    public function deshabilitarPreguntaReportada($pregunta_id, $reporte_id = null) {
         $this->database->execute("UPDATE preguntas SET activa = 0 WHERE id = ?", [$pregunta_id]);
-        return $this->database->execute("UPDATE reportes SET estado = 'ACEPTADO' WHERE id = ?", [$reporte_id]);
+
+        if (!empty($reporte_id)) {
+            $this->database->execute("UPDATE reportes SET estado = 'ACEPTADO' WHERE id = ?", [$reporte_id]);
+        }
     }
 
-    public function getTodasLasPreguntasActivas() {
-        $query = "SELECT p.id, p.enunciado, c.nombre AS categoria_nombre 
+    public function getTodasLasPreguntas() {
+        $query = "SELECT p.id, p.enunciado, p.activa, c.nombre AS categoria_nombre, c.activa AS categoria_activa 
                   FROM preguntas p 
                   JOIN categorias c ON p.categoria_id = c.id 
-                  WHERE p.activa = 1 
                   ORDER BY p.id DESC";
         return $this->database->query($query);
+    }
+
+    public function habilitarPregunta($pregunta_id) {
+        $this->database->execute("UPDATE preguntas SET activa = 1 WHERE id = ?", [$pregunta_id]);
     }
 
     public function getPreguntaActivaConRespuestas($id) {
@@ -150,5 +156,39 @@ class EditorModel
             $sqlResp = "INSERT INTO respuestas (pregunta_id, texto, es_correcta) VALUES (?, ?, ?)";
             $this->database->execute($sqlResp, [$pregunta_id, $textos_resp[$i], $es_correcta]);
         }
+    }
+
+    public function getCategorias() {
+        $sql = "SELECT * FROM categorias";
+        return $this->database->query($sql);
+    }
+
+    public function getCategoriasActivas() {
+        return $this->database->query("SELECT * FROM categorias WHERE activa = 1");
+    }
+
+    public function getCategoriaPorId($id) {
+        $res = $this->database->query("SELECT * FROM categorias WHERE id = ?", [$id]);
+        return count($res) > 0 ? $res[0] : null;
+    }
+
+    public function crearCategoria($nombre, $color) {
+        $sql = "INSERT INTO categorias (nombre, color) VALUES (?, ?)";
+        return $this->database->execute($sql, [$nombre, $color]);
+    }
+
+    public function actualizarCategoria($id, $nombre, $color) {
+        $sql = "UPDATE categorias SET nombre = ?, color = ? WHERE id = ?";
+        return $this->database->execute($sql, [$nombre, $color, $id]);
+    }
+
+    public function eliminarCategoria($id) {
+        $sql = "UPDATE categorias SET activa = 0 WHERE id = ?";
+        return $this->database->execute($sql, [$id]);
+    }
+
+    public function activarCategoria($id) {
+        $sql = "UPDATE categorias SET activa = 1 WHERE id = ?";
+        return $this->database->execute($sql, [$id]);
     }
 }

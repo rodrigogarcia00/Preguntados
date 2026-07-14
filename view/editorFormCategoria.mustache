@@ -1,0 +1,23 @@
+{{>header}}
+<main class="sugerir-container">
+    <div class="sugerir-card">
+        <h2>{{#categoria}}Editar Categoría{{/categoria}}{{^categoria}}Crear Nueva Categoría{{/categoria}}</h2>
+        <p>Definí el nombre y el color con el que se mostrará en el juego.</p>
+
+        <form action="{{#categoria}}/editor/procesarEdicionCategoria{{/categoria}}{{^categoria}}/editor/procesarCreacionCategoria{{/categoria}}" method="POST" class="form-sugerir">
+            {{#categoria}}
+                <input type="hidden" name="id" value="{{id}}">
+            {{/categoria}}
+
+            <label>Nombre:</label>
+            <input type="text" name="nombre" value="{{#categoria}}{{nombre}}{{/categoria}}" required>
+
+            <label>Color:</label>
+            <input type="color" name="color" value="{{#categoria}}{{color}}{{/categoria}}" required style="width: 100%; height: 50px; border: none; cursor: pointer; padding: 0;">
+
+            <button type="submit" class="btn-primario" style="margin-top: 20px;">Guardar Categoría</button>
+            <a href="/editor/categorias" class="btn-secundario" style="display: block; text-align: center; margin-top: 15px; text-decoration: none;">Cancelar</a>
+        </form>
+    </div>
+</main>
+{{>footer}}

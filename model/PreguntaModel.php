@@ -27,7 +27,7 @@ class PreguntaModel {
                 c.color AS categoria_color
             FROM preguntas p
             INNER JOIN categorias c ON c.id = p.categoria_id
-            WHERE p.activa = 1 
+            WHERE p.activa = 1 AND c.activa = 1
             ORDER BY RAND()
             LIMIT 1";
 
@@ -102,7 +102,8 @@ class PreguntaModel {
     public function obtenerPreguntaNoVista($usuarioId) {
         $sql = "SELECT p.*
                 FROM preguntas p
-                WHERE p.activa = 1 AND p.id NOT IN (
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activa = 1 AND c.activa = 1 AND p.id NOT IN (
                     SELECT pregunta_id
                     FROM usuario_pregunta_vista
                     WHERE usuario_id = ?
@@ -204,7 +205,7 @@ class PreguntaModel {
     }
 
     public function getCategorias() {
-        $sql = "SELECT * FROM categorias";
+        $sql = "SELECT * FROM categorias WHERE activa = 1";
         return $this->database->query($sql);
     }
 
@@ -221,7 +222,8 @@ class PreguntaModel {
     private function obtenerPreguntaNoVistaMasCercanaAlNivel($usuarioId, $nivelObjetivo) {
         $sql = "SELECT p.*
                 FROM preguntas p
-                WHERE p.activa = 1 AND p.id NOT IN (
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activa = 1 AND c.activa = 1 AND p.id NOT IN (
                     SELECT pregunta_id
                     FROM usuario_pregunta_vista
                     WHERE usuario_id = ?
@@ -237,10 +239,11 @@ class PreguntaModel {
     private function obtenerPreguntaMasCercanaAlNivel($nivelObjetivo) {
         $sql = "SELECT p.*
                 FROM preguntas p
-                WHERE p.activa = 1
+                INNER JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activa = 1 AND c.activa = 1
                 ORDER BY ABS(p.nivel - ?), RAND()
                 LIMIT 1";
-        
+
         Log::info("PreguntaModel::obtenerPreguntaMasCercanaAlNivel nivelObjetivo: $nivelObjetivo");
         $filas = $this->database->query($sql, [$nivelObjetivo]);
         return !empty($filas) ? $filas[0] : null;
