@@ -12,19 +12,24 @@ class EditorController{
     public function list() {
         $datos['sugeridas'] = $this->model->getPreguntasSugeridas();
         $datos['reportadas'] = $this->model->getPreguntasReportadas();
-        $datos['activas'] = $this->model->getTodasLasPreguntasActivas();
+        $datos['preguntas'] = $this->model->getTodasLasPreguntas();
 
         $this->renderer->render('editor', $datos);
     }
 
     public function editar() {
         $id = $_POST['id'];
+        $pregunta = $this->model->getPreguntaSugeridaPorId($id)[0];
 
-        // Buscamos los datos de esa pregunta en la BD para precargar el formulario
-        $datos['pregunta'] = $this->model->getPreguntaSugeridaPorId($id);
+        $categorias = $this->model->getCategoriasActivas();
+        foreach($categorias as &$cat) {
+            if ($cat['id'] == $pregunta['categoria_id']) {
+                $cat['selected'] = true;
+            }
+        }
+        $pregunta['categorias'] = $categorias;
 
-        // Renderizamos la nueva vista pasándole los datos de la pregunta
-        $this->renderer->render('editarPregunta', $datos['pregunta'][0]);
+        $this->renderer->render('editarPregunta', $pregunta);
     }
 
     public function procesarEdicion() {
@@ -69,8 +74,8 @@ class EditorController{
     }
 
     public function crearActiva() {
-        // Renderizamos un formulario vacío
-        $this->renderer->render('editorFormActiva');
+        $datos['categorias'] = $this->model->getCategoriasActivas();
+        $this->renderer->render('editorFormActiva', $datos);
     }
 
     public function procesarCreacionActiva() {
@@ -85,13 +90,19 @@ class EditorController{
 
     public function editarActiva() {
         $pregunta_id = $_POST['pregunta_id'];
-
         $datos = $this->model->getPreguntaActivaConRespuestas($pregunta_id);
 
-        // Si nos pasaron un reporte_id desde la tabla de reportes, lo inyectamos a la vista
         if(isset($_POST['reporte_id'])) {
             $datos['reporte_id'] = $_POST['reporte_id'];
         }
+
+        $categorias = $this->model->getCategoriasActivas();
+        foreach($categorias as &$cat) {
+            if ($cat['id'] == $datos['categoria_id']) {
+                $cat['selected'] = true;
+            }
+        }
+        $datos['categorias'] = $categorias;
 
         $this->renderer->render('editorFormActiva', $datos);
     }
@@ -107,6 +118,54 @@ class EditorController{
         $textos = [$_POST['opcion_a'], $_POST['opcion_b'], $_POST['opcion_c'], $_POST['opcion_d']];
 
         $this->model->actualizarPreguntaActiva($pregunta_id, $enunciado, $categoria_id, $correcta, $ids, $textos, $reporte_id);
+        Redirect::to('/editor/list');
+    }
+
+    public function categorias() {
+        $datos['categorias'] = $this->model->getCategorias();
+        $this->renderer->render('editorCategorias', $datos);
+    }
+
+    public function crearCategoria() {
+        $this->renderer->render('editorFormCategoria');
+    }
+
+    public function procesarCreacionCategoria() {
+        $nombre = $_POST['nombre'];
+        $color = $_POST['color'];
+        $this->model->crearCategoria($nombre, $color);
+        Redirect::to('/editor/categorias');
+    }
+
+    public function editarCategoria() {
+        $id = $_POST['id'];
+        $datos['categoria'] = $this->model->getCategoriaPorId($id);
+        $this->renderer->render('editorFormCategoria', $datos);
+    }
+
+    public function procesarEdicionCategoria() {
+        $id = $_POST['id'];
+        $nombre = $_POST['nombre'];
+        $color = $_POST['color'];
+        $this->model->actualizarCategoria($id, $nombre, $color);
+        Redirect::to('/editor/categorias');
+    }
+
+    public function eliminarCategoria() {
+        $id = $_POST['id'];
+        $this->model->eliminarCategoria($id);
+        Redirect::to('/editor/categorias');
+    }
+
+    public function activarCategoria() {
+        $id = $_POST['id'];
+        $this->model->activarCategoria($id);
+        Redirect::to('/editor/categorias');
+    }
+
+    public function habilitarPregunta() {
+        $pregunta_id = $_POST['pregunta_id'];
+        $this->model->habilitarPregunta($pregunta_id);
         Redirect::to('/editor/list');
     }
 }

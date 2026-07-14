@@ -171,3 +171,5 @@ CREATE TABLE respuestas_usuario (
 );
 
 ALTER TABLE preguntas ADD COLUMN activa TINYINT(1) DEFAULT 1;
+
+ALTER TABLE categorias ADD COLUMN activa TINYINT(1) DEFAULT 1;

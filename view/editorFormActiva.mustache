@@ -17,8 +17,13 @@
             <label>Pregunta:</label>
             <input type="text" name="enunciado" value="{{enunciado}}" required>
 
-            <label>ID Categoría (1:Historia, 2:Deportes, 3:Entretenimiento, 4:Arte, 5:Ciencia):</label>
-            <input type="number" name="categoria" value="{{categoria_id}}" min="1" max="5" required>
+            <label>Categoría:</label>
+            <select name="categoria" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; margin-bottom: 15px; background: white;">
+                <option value="" disabled {{^categoria_id}}selected{{/categoria_id}}>Seleccione una categoría</option>
+                {{#categorias}}
+                    <option value="{{id}}" {{#selected}}selected{{/selected}}>{{nombre}}</option>
+                {{/categorias}}
+            </select>
 
             <label>Opción A:</label>
             <input type="text" name="opcion_a" value="{{opcion_a}}" required>
